@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <meta
+        name="description"
+        content="Curruscos Clan — una panda, un nombre y demasiadas historias."
+    >
+
+    <title>Curruscos Clan</title>
+
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+
+<body>
+
+    <!-- =========================
+         NAVEGACIÓN
+    ========================== -->
+
+    <header class="navbar">
+
+        <a href="index.html" class="logo">
+            CURRUSCOS<span>.</span>
+        </a>
+
+
+        <nav id="mainNav">
+
+            <a href="index.html" class="active">
+                Inicio
+            </a>
+
+            <a href="miembros.html">
+                Miembros
+            </a>
+
+            <a href="historia.html">
+                Historia
+            </a>
+
+            <a href="recuerdos.html">
+                Recuerdos
+            </a>
+
+            <a href="eventos.html">
+                Eventos
+            </a>
+
+        </nav>
+
+
+        <button
+            class="menu-button"
+            id="menuButton"
+            aria-label="Abrir menú"
+        >
+            ☰
+        </button>
+
+    </header>
+
+
+
+    <!-- =========================
+         CONTENIDO PRINCIPAL
+    ========================== -->
+
+    <main>
+
+
+        <!-- HERO -->
+
+        <section class="hero">
+
+            <div class="hero-content">
+
+                <div class="eyebrow">
+                    CURRUSCOS CLAN
+                </div>
+
+
+                <h1>
+                    Una panda.<br>
+                    Un nombre.<br>
+                    <span>Demasiadas historias.</span>
+                </h1>
+
+
+                <p>
+                    Bienvenido al archivo oficial de todo lo que
+                    hemos vivido juntos.
+                </p>
+
+
+                <div class="hero-buttons">
+
+                    <a
+                        href="historia.html"
+                        class="button primary"
+                    >
+                        Nuestra historia
+                    </a>
+
+
+                    <a
+                        href="miembros.html"
+                        class="button secondary"
+                    >
+                        Conocer al clan
+                    </a>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =========================
+             ESTADÍSTICAS
+        ========================== -->
+
+        <section class="stats-section">
+
+            <div class="section-heading">
+
+                <span>
+                    EL CLAN EN NÚMEROS
+                </span>
+
+                <h2>
+                    Algunas cifras.
+                </h2>
+
+                <p>
+                    Porque cualquier grupo necesita
+                    estadísticas completamente innecesarias.
+                </p>
+
+            </div>
+
+
+            <div class="stats-grid">
+
+                <div class="stat">
+
+                    <strong id="membersCount">
+                        0
+                    </strong>
+
+                    <span>
+                        Miembros
+                    </span>
+
+                </div>
+
+
+                <div class="stat">
+
+                    <strong id="memoriesCount">
+                        0
+                    </strong>
+
+                    <span>
+                        Recuerdos
+                    </span>
+
+                </div>
+
+
+                <div class="stat">
+
+                    <strong id="eventsCount">
+                        0
+                    </strong>
+
+                    <span>
+                        Eventos
+                    </span>
+
+                </div>
+
+
+                <div class="stat">
+
+                    <strong id="quotesCount">
+                        0
+                    </strong>
+
+                    <span>
+                        Frases
+                    </span>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =========================
+             MIEMBROS
+        ========================== -->
+
+        <section class="section">
+
+            <div class="section-heading">
+
+                <span>
+                    EL CLAN
+                </span>
+
+                <h2>
+                    Los Curruscos.
+                </h2>
+
+                <p>
+                    Los responsables de que exista todo esto.
+                </p>
+
+            </div>
+
+
+            <div
+                class="members-preview"
+                id="membersPreview"
+            >
+                <!-- JavaScript inserta los miembros aquí -->
+            </div>
+
+
+            <div class="center">
+
+                <a
+                    href="miembros.html"
+                    class="text-button"
+                >
+                    Ver todos los miembros →
+                </a>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =========================
+             FRASE DESTACADA
+        ========================== -->
+
+        <section class="quote-section">
+
+            <span>
+                FRASE DEL CLAN
+            </span>
+
+
+            <blockquote id="featuredQuote">
+                "..."
+            </blockquote>
+
+
+            <p id="featuredQuoteAuthor">
+                — Curruscos
+            </p>
+
+        </section>
+
+
+
+        <!-- =========================
+             RECUERDOS
+        ========================== -->
+
+        <section class="section">
+
+            <div class="section-heading">
+
+                <span>
+                    RECUERDOS
+                </span>
+
+                <h2>
+                    Lo que no queremos olvidar.
+                </h2>
+
+                <p>
+                    Momentos que merecen quedarse aquí.
+                </p>
+
+            </div>
+
+
+            <div
+                class="memory-grid"
+                id="latestMemories"
+            >
+                <!-- JavaScript inserta recuerdos aquí -->
+            </div>
+
+
+            <div class="center">
+
+                <a
+                    href="recuerdos.html"
+                    class="text-button"
+                >
+                    Ver todos los recuerdos →
+                </a>
+
+            </div>
+
+        </section>
+
+
+
+        <!-- =========================
+             CTA
+        ========================== -->
+
+        <section class="cta">
+
+            <div class="eyebrow">
+                LA HISTORIA CONTINÚA
+            </div>
+
+
+            <h2>
+                Esto acaba de empezar.
+            </h2>
+
+
+            <p>
+                Todavía quedan demasiadas historias
+                por añadir.
+            </p>
+
+
+            <a
+                href="historia.html"
+                class="button primary"
+            >
+                Entrar en la historia
+            </a>
+
+        </section>
+
+    </main>
+
+
+
+    <!-- =========================
+         FOOTER
+    ========================== -->
+
+    <footer>
+
+        <div>
+
+            <strong>
+                CURRUSCOS.
+            </strong>
+
+            <p>
+                Una panda, un nombre y demasiadas historias.
+            </p>
+
+        </div>
+
+
+        <div>
+
+            <span>
+                © 2026 Curruscos Clan
+            </span>
+
+        </div>
+
+    </footer>
+
+
+
+    <!-- =========================
+         JAVASCRIPT
+    ========================== -->
+
+    <script src="js/data.js"></script>
+
+    <script src="js/app.js"></script>
+
+</body>
+
+</html>
