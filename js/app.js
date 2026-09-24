@@ -29,37 +29,60 @@ function loadStats() {
         quotes.textContent = CURRUSCOS_DATA.quotes.length;
     }
 }
-
-
 function loadMembers() {
-    const container = document.getElementById("membersPreview");
+    const previewContainer = document.getElementById("membersPreview");
+    const gridContainer = document.getElementById("membersGrid");
 
-    if (!container) return;
+    // Página principal: mostrar solo 4
+    if (previewContainer) {
+        const members = CURRUSCOS_DATA.members.slice(0, 4);
 
-    const members = CURRUSCOS_DATA.members.slice(0, 4);
+        previewContainer.innerHTML = members.map(member => `
+            <article class="member-card">
 
-    container.innerHTML = members.map(member => `
-        <article class="member-card">
+                <div class="member-image">
+                    <img
+                        src="${member.image}"
+                        alt="${member.name}"
+                        loading="lazy"
+                        onerror="this.style.display='none'"
+                    >
+                </div>
 
-            <div class="member-image">
-                <img
-                    src="${member.image}"
-                    alt="${member.name}"
-                    loading="lazy"
-                    onerror="this.style.display='none'"
-                >
-            </div>
+                <div class="member-info">
+                    <span>${member.role}</span>
+                    <h3>${member.name}</h3>
+                    <p>@${member.username}</p>
+                </div>
 
-            <div class="member-info">
-                <span>${member.role}</span>
-                <h3>${member.name}</h3>
-                <p>@${member.username}</p>
-            </div>
+            </article>
+        `).join("");
+    }
 
-        </article>
-    `).join("");
+    // Página de miembros: mostrar todos
+    if (gridContainer) {
+        gridContainer.innerHTML = CURRUSCOS_DATA.members.map(member => `
+            <article class="member-card">
+
+                <div class="member-image">
+                    <img
+                        src="${member.image}"
+                        alt="${member.name}"
+                        loading="lazy"
+                        onerror="this.style.display='none'"
+                    >
+                </div>
+
+                <div class="member-info">
+                    <span>${member.role}</span>
+                    <h3>${member.name}</h3>
+                    <p>@${member.username}</p>
+                </div>
+
+            </article>
+        `).join("");
+    }
 }
-
 
 function loadMemories() {
     const container = document.getElementById("latestMemories");
