@@ -286,6 +286,7 @@ async function deleteEvent(id) {
     await loadEvents();
 }
 function formatEventDay(date) {
+    console.log("FORMAT EVENT DAY CARGADO");
     const d = new Date(date);
     return d.getDate();
 }
