@@ -4,6 +4,8 @@ document.addEventListener("DOMContentLoaded", () => {
     loadMemories();
     loadQuote();
     setupMobileMenu();
+    loadEvents();
+    setupEventForm();
 });
 
 
@@ -150,4 +152,162 @@ function setupMobileMenu() {
     button.addEventListener("click", () => {
         nav.classList.toggle("mobile-open");
     });
+}
+function loadEvents() {
+    const container = document.getElementById("eventsList");
+
+    if (!container) return;
+
+    let events = JSON.parse(
+        localStorage.getItem("curruscos_events")
+    ) || CURRUSCOS_DATA.events;
+
+    if (events.length === 0) {
+        container.innerHTML = `
+            <div class="empty-state">
+                <h3>No hay eventos todavía</h3>
+                <p>Creemos el primero.</p>
+            </div>
+        `;
+        return;
+    }
+
+    container.innerHTML = events.map(event => `
+        <article class="event-card">
+
+            <div class="event-date">
+                <span>${formatEventDay(event.date)}</span>
+                <strong>${formatEventMonth(event.date)}</strong>
+            </div>
+
+            <div class="event-info">
+
+                <h3>${event.title}</h3>
+
+                <p class="event-details">
+                    🕐 ${event.time || "Hora por confirmar"}
+                    &nbsp; · &nbsp;
+                    📍 ${event.location}
+                </p>
+
+                <p>
+                    ${event.description || ""}
+                </p>
+
+            </div>
+
+            <button
+                class="event-delete"
+                onclick="deleteEvent(${event.id})"
+            >
+                Eliminar
+            </button>
+
+        </article>
+    `).join("");
+}
+
+
+function setupEventForm() {
+
+    const form = document.getElementById("eventForm");
+
+    if (!form) return;
+
+    form.addEventListener("submit", (event) => {
+
+        event.preventDefault();
+
+        const title =
+            document.getElementById("eventTitle").value;
+
+        const date =
+            document.getElementById("eventDate").value;
+
+        const time =
+            document.getElementById("eventTime").value;
+
+        const location =
+            document.getElementById("eventLocation").value;
+
+        const description =
+            document.getElementById("eventDescription").value;
+
+
+        const events = JSON.parse(
+            localStorage.getItem("curruscos_events")
+        ) || [...CURRUSCOS_DATA.events];
+
+
+        const newEvent = {
+
+            id: Date.now(),
+
+            title: title,
+
+            date: date,
+
+            time: time,
+
+            location: location,
+
+            description: description
+
+        };
+
+
+        events.push(newEvent);
+
+
+        localStorage.setItem(
+            "curruscos_events",
+            JSON.stringify(events)
+        );
+
+
+        form.reset();
+
+        loadEvents();
+
+    });
+}
+
+
+function deleteEvent(id) {
+
+    let events = JSON.parse(
+        localStorage.getItem("curruscos_events")
+    ) || [...CURRUSCOS_DATA.events];
+
+
+    events = events.filter(event => event.id !== id);
+
+
+    localStorage.setItem(
+        "curruscos_events",
+        JSON.stringify(events)
+    );
+
+
+    loadEvents();
+}
+
+
+function formatEventDay(dateString) {
+
+    const date = new Date(dateString);
+
+    return date.getDate();
+
+}
+
+
+function formatEventMonth(dateString) {
+
+    const date = new Date(dateString);
+
+    return date.toLocaleDateString("es-ES", {
+        month: "short"
+    }).replace(".", "");
+
 }
