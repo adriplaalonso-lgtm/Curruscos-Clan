@@ -533,39 +533,32 @@
 
 <script>
 
-
 /* ==========================================
-   OBTENER EVENTO
+   DATOS DEL EVENTO
 ========================================== */
 
-function getCurrentEvent() {
+function getCurrentEventData() {
 
-    const params =
-        new URLSearchParams(window.location.search);
-
-    const eventId =
-        params.get("id");
+    const params = new URLSearchParams(window.location.search);
+    const eventId = params.get("id");
 
     const events =
-        JSON.parse(
-            localStorage.getItem("curruscos_events")
-        ) || [];
+        JSON.parse(localStorage.getItem("curruscos_events")) || [];
 
-    const event =
-        events.find(
-            e => String(e.id) === String(eventId)
-        );
+    const event = events.find(
+        e => String(e.id) === String(eventId)
+    );
 
     return {
         event,
-        events
+        events,
+        eventId
     };
 }
 
 
-
 /* ==========================================
-   OBTENER MIEMBROS
+   MIEMBROS
 ========================================== */
 
 function getMembers() {
@@ -581,11 +574,6 @@ function getMembers() {
 }
 
 
-
-/* ==========================================
-   NOMBRE DEL MIEMBRO
-========================================== */
-
 function getMemberName(member) {
 
     return (
@@ -595,27 +583,44 @@ function getMemberName(member) {
         member.nombreCompleto ||
         "Miembro"
     );
-
 }
 
-
-
-/* ==========================================
-   ID DEL MIEMBRO
-========================================== */
 
 function getMemberId(member, index) {
 
     return String(
-        member.id ||
-        member._id ||
-        member.name ||
-        member.nombre ||
+        member.id ??
+        member._id ??
+        member.name ??
+        member.nombre ??
         index
     );
-
 }
 
+
+/* ==========================================
+   GUARDAR EVENTO
+========================================== */
+
+function saveCurrentEvent(event) {
+
+    const data = getCurrentEventData();
+
+    if (!data.event) return;
+
+    const index = data.events.findIndex(
+        e => String(e.id) === String(event.id)
+    );
+
+    if (index === -1) return;
+
+    data.events[index] = event;
+
+    localStorage.setItem(
+        "curruscos_events",
+        JSON.stringify(data.events)
+    );
+}
 
 
 /* ==========================================
@@ -624,99 +629,59 @@ function getMemberId(member, index) {
 
 function loadEventPage() {
 
-    const data =
-        getCurrentEvent();
-
-    const event =
-        data.event;
+    const data = getCurrentEventData();
+    const event = data.event;
 
     if (!event) {
 
-        document.getElementById(
-            "eventTitle"
-        ).textContent =
+        document.getElementById("eventTitle").textContent =
             "Evento no encontrado";
 
-        document.getElementById(
-            "eventDescription"
-        ).textContent =
+        document.getElementById("eventDescription").textContent =
             "Este evento no existe o ha sido eliminado.";
 
         return;
     }
 
 
-    /* Inicializar estructura */
+    /* Estructura inicial */
 
     if (!event.participants) {
-
         event.participants = {};
-
     }
 
     if (!Array.isArray(event.tasks)) {
-
         event.tasks = [];
-
     }
 
 
-    /* Información principal */
+    /* Datos principales */
 
-    document.getElementById(
-        "eventTitle"
-    ).textContent =
-        event.title;
+    document.getElementById("eventTitle").textContent =
+        event.title || "Evento";
 
 
-    document.getElementById(
-        "eventDescription"
-    ).textContent =
+    document.getElementById("eventDescription").textContent =
         event.description || "";
 
 
-    document.getElementById(
-        "eventInfo"
-    ).innerHTML = `
+    document.getElementById("eventInfo").innerHTML = `
 
         <div class="event-main-info">
 
             <div class="event-info-box">
-
-                <span>
-                    FECHA
-                </span>
-
-                <strong>
-                    📅 ${event.date || "Sin fecha"}
-                </strong>
-
+                <span>FECHA</span>
+                <strong>📅 ${event.date || "Sin fecha"}</strong>
             </div>
 
-
             <div class="event-info-box">
-
-                <span>
-                    HORA
-                </span>
-
-                <strong>
-                    🕐 ${event.time || "Sin hora"}
-                </strong>
-
+                <span>HORA</span>
+                <strong>🕐 ${event.time || "Sin hora"}</strong>
             </div>
 
-
             <div class="event-info-box">
-
-                <span>
-                    LUGAR
-                </span>
-
-                <strong>
-                    📍 ${event.location || "Sin lugar"}
-                </strong>
-
+                <span>LUGAR</span>
+                <strong>📍 ${escapeHtml(event.location || "Sin lugar")}</strong>
             </div>
 
         </div>
@@ -724,50 +689,14 @@ function loadEventPage() {
     `;
 
 
-    saveEventChanges();
+    saveCurrentEvent(event);
 
     renderParticipants(event);
-
+    renderTaskAssignees(event);
     renderTasks(event);
-
-    updateTaskAssignees();
-
-    updateEventProgress(event);
-
-    updateEventStatus(event);
-
+    updateProgress(event);
+    updateStatus(event);
 }
-
-
-
-/* ==========================================
-   GUARDAR CAMBIOS
-========================================== */
-
-function saveEventChanges() {
-
-    const data =
-        getCurrentEvent();
-
-    if (!data.event) return;
-
-    const index =
-        data.events.findIndex(
-            e => String(e.id) === String(data.event.id)
-        );
-
-    if (index === -1) return;
-
-    data.events[index] =
-        data.event;
-
-    localStorage.setItem(
-        "curruscos_events",
-        JSON.stringify(data.events)
-    );
-
-}
-
 
 
 /* ==========================================
@@ -776,24 +705,18 @@ function saveEventChanges() {
 
 function renderParticipants(event) {
 
-    const members =
-        getMembers();
+    const members = getMembers();
 
-    const container =
-        document.getElementById(
-            "participantsList"
-        );
-
+    const list =
+        document.getElementById("participantsList");
 
     const summary =
-        document.getElementById(
-            "participantsSummary"
-        );
+        document.getElementById("participantsSummary");
 
 
     if (!members.length) {
 
-        container.innerHTML = `
+        list.innerHTML = `
             <div class="event-page-card">
                 No se han encontrado miembros.
             </div>
@@ -808,76 +731,121 @@ function renderParticipants(event) {
     let pending = 0;
 
 
-    container.innerHTML =
-        members.map(
-            (member, index) => {
-
-                const id =
-                    getMemberId(
-                        member,
-                        index
-                    );
-
-                const name =
-                    getMemberName(
-                        member
-                    );
+    list.innerHTML = "";
 
 
-                const status =
-                    event.participants[id] ||
-                    "pending";
+    members.forEach((member, index) => {
+
+        const memberId =
+            getMemberId(member, index);
+
+        const memberName =
+            getMemberName(member);
+
+        const status =
+            event.participants[memberId] || "pending";
 
 
-                if (status === "yes") yes++;
-                else if (status === "no") no++;
-                else pending++;
+        if (status === "yes") yes++;
+        else if (status === "no") no++;
+        else pending++;
 
 
-                return `
+        const card =
+            document.createElement("div");
 
-                    <div class="participant-card">
-
-                        <div class="participant-name">
-
-                            ${name}
-
-                        </div>
+        card.className =
+            "participant-card";
 
 
-                        <div class="participant-actions">
+        const name =
+            document.createElement("div");
 
-                            <button
-                                class="${status === "yes" ? "active" : ""}"
-                                onclick="setParticipantStatus('${id}', 'yes')"
-                            >
-                                ✅ Va
-                            </button>
+        name.className =
+            "participant-name";
 
-
-                            <button
-                                class="${status === "no" ? "active" : ""}"
-                                onclick="setParticipantStatus('${id}', 'no')"
-                            >
-                                ❌ No va
-                            </button>
+        name.textContent =
+            memberName;
 
 
-                            <button
-                                class="${status === "pending" ? "active" : ""}"
-                                onclick="setParticipantStatus('${id}', 'pending')"
-                            >
-                                ❓ Pendiente
-                            </button>
+        const actions =
+            document.createElement("div");
 
-                        </div>
+        actions.className =
+            "participant-actions";
 
-                    </div>
 
-                `;
+        const yesButton =
+            document.createElement("button");
 
-            }
-        ).join("");
+        yesButton.type = "button";
+        yesButton.textContent = "✅ Va";
+
+        if (status === "yes") {
+            yesButton.classList.add("active");
+        }
+
+
+        const noButton =
+            document.createElement("button");
+
+        noButton.type = "button";
+        noButton.textContent = "❌ No va";
+
+        if (status === "no") {
+            noButton.classList.add("active");
+        }
+
+
+        const pendingButton =
+            document.createElement("button");
+
+        pendingButton.type = "button";
+        pendingButton.textContent = "❓ Pendiente";
+
+        if (status === "pending") {
+            pendingButton.classList.add("active");
+        }
+
+
+        yesButton.addEventListener(
+            "click",
+            () => changeParticipant(
+                memberId,
+                "yes"
+            )
+        );
+
+
+        noButton.addEventListener(
+            "click",
+            () => changeParticipant(
+                memberId,
+                "no"
+            )
+        );
+
+
+        pendingButton.addEventListener(
+            "click",
+            () => changeParticipant(
+                memberId,
+                "pending"
+            )
+        );
+
+
+        actions.appendChild(yesButton);
+        actions.appendChild(noButton);
+        actions.appendChild(pendingButton);
+
+
+        card.appendChild(name);
+        card.appendChild(actions);
+
+        list.appendChild(card);
+
+    });
 
 
     summary.innerHTML = `
@@ -895,176 +863,150 @@ function renderParticipants(event) {
         </div>
 
     `;
-
 }
-
 
 
 /* ==========================================
    CAMBIAR PARTICIPANTE
 ========================================== */
 
-function setParticipantStatus(
-    memberId,
-    status
-) {
+function changeParticipant(memberId, status) {
 
-    const data =
-        getCurrentEvent();
+    const data = getCurrentEventData();
 
     if (!data.event) return;
 
 
     if (!data.event.participants) {
-
         data.event.participants = {};
-
     }
 
 
-    data.event.participants[
-        memberId
-    ] = status;
+    data.event.participants[String(memberId)] =
+        status;
 
 
-    saveEventChanges();
-
+    saveCurrentEvent(data.event);
 
     loadEventPage();
-
 }
 
 
-
 /* ==========================================
-   SELECT DE RESPONSABLES
+   RESPONSABLES DE TAREAS
 ========================================== */
 
-function updateTaskAssignees() {
+function renderTaskAssignees(event) {
 
     const select =
-        document.getElementById(
-            "taskAssignee"
-        );
+        document.getElementById("taskAssignee");
 
     if (!select) return;
 
 
-    const members =
-        getMembers();
+    const members = getMembers();
 
 
-    select.innerHTML = `
-        <option value="">
-            Sin responsable
-        </option>
-    `;
+    select.innerHTML = "";
 
 
-    members.forEach(
-        (member, index) => {
+    const emptyOption =
+        document.createElement("option");
 
-            const id =
-                getMemberId(
-                    member,
-                    index
-                );
+    emptyOption.value = "";
+    emptyOption.textContent =
+        "Sin responsable";
 
-            const name =
-                getMemberName(
-                    member
-                );
+    select.appendChild(emptyOption);
 
 
-            const option =
-                document.createElement(
-                    "option"
-                );
+    members.forEach((member, index) => {
 
+        const option =
+            document.createElement("option");
 
-            option.value =
-                id;
+        option.value =
+            getMemberId(member, index);
 
-            option.textContent =
-                name;
+        option.textContent =
+            getMemberName(member);
 
+        select.appendChild(option);
 
-            select.appendChild(
-                option
-            );
-
-        }
-    );
+    });
 
 }
 
 
-
 /* ==========================================
-   CREAR TAREA
+   FORMULARIO DE TAREAS
 ========================================== */
 
-document
-    .getElementById("taskForm")
-    .addEventListener(
+function setupTaskForm() {
+
+    const form =
+        document.getElementById("taskForm");
+
+    if (!form) return;
+
+
+    form.addEventListener(
         "submit",
         function(event) {
 
             event.preventDefault();
 
 
-            const title =
-                document.getElementById(
-                    "taskTitle"
-                ).value.trim();
+            const titleInput =
+                document.getElementById("taskTitle");
 
+            const assigneeInput =
+                document.getElementById("taskAssignee");
+
+
+            const title =
+                titleInput.value.trim();
 
             const assignee =
-                document.getElementById(
-                    "taskAssignee"
-                ).value;
+                assigneeInput.value;
 
 
-            if (!title) return;
+            if (!title) {
+                titleInput.focus();
+                return;
+            }
 
 
             const data =
-                getCurrentEvent();
+                getCurrentEventData();
 
 
             if (!data.event) return;
 
 
             if (!Array.isArray(data.event.tasks)) {
-
                 data.event.tasks = [];
-
             }
 
 
             data.event.tasks.push({
 
-                id:
-                    Date.now(),
+                id: Date.now(),
 
-                title:
-                    title,
+                title: title,
 
-                assignee:
-                    assignee,
+                assignee: assignee,
 
-                completed:
-                    false
+                completed: false
 
             });
 
 
-            saveEventChanges();
+            saveCurrentEvent(data.event);
 
 
-            document
-                .getElementById("taskForm")
-                .reset();
+            titleInput.value = "";
+            assigneeInput.value = "";
 
 
             loadEventPage();
@@ -1072,6 +1014,7 @@ document
         }
     );
 
+}
 
 
 /* ==========================================
@@ -1081,9 +1024,10 @@ document
 function renderTasks(event) {
 
     const container =
-        document.getElementById(
-            "tasksList"
-        );
+        document.getElementById("tasksList");
+
+
+    container.innerHTML = "";
 
 
     if (!event.tasks.length) {
@@ -1104,102 +1048,145 @@ function renderTasks(event) {
     }
 
 
-    const members =
-        getMembers();
+    const members = getMembers();
 
 
-    container.innerHTML =
-        event.tasks.map(
-            task => {
+    event.tasks.forEach(task => {
 
-                let assigneeName =
-                    "Sin responsable";
+        const card =
+            document.createElement("div");
 
-
-                if (task.assignee) {
-
-                    const member =
-                        members.find(
-                            (m, index) =>
-                                getMemberId(
-                                    m,
-                                    index
-                                ) === String(
-                                    task.assignee
-                                )
-                        );
+        card.className =
+            "task-card";
 
 
-                    if (member) {
-
-                        assigneeName =
-                            getMemberName(
-                                member
-                            );
-
-                    }
-
-                }
+        if (task.completed) {
+            card.classList.add(
+                "task-completed"
+            );
+        }
 
 
-                return `
+        const left =
+            document.createElement("div");
 
-                    <div
-                        class="task-card
-                        ${task.completed ? "task-completed" : ""}"
-                    >
-
-                        <div class="task-left">
-
-                            <input
-                                type="checkbox"
-                                class="task-checkbox"
-                                ${task.completed ? "checked" : ""}
-                                onchange="toggleTask(${task.id})"
-                            >
+        left.className =
+            "task-left";
 
 
-                            <div>
+        const checkbox =
+            document.createElement("input");
 
-                                <div class="task-title">
+        checkbox.type =
+            "checkbox";
 
-                                    ${escapeHtml(
-                                        task.title
-                                    )}
+        checkbox.className =
+            "task-checkbox";
 
-                                </div>
-
-
-                                <div class="task-assignee">
-
-                                    👤 ${escapeHtml(
-                                        assigneeName
-                                    )}
-
-                                </div>
-
-                            </div>
-
-                        </div>
+        checkbox.checked =
+            Boolean(task.completed);
 
 
-                        <button
-                            class="delete-task"
-                            onclick="deleteTask(${task.id})"
-                            title="Eliminar tarea"
-                        >
-                            🗑️
-                        </button>
+        checkbox.addEventListener(
+            "change",
+            () => toggleTask(task.id)
+        );
 
-                    </div>
 
-                `;
+        const content =
+            document.createElement("div");
+
+
+        const title =
+            document.createElement("div");
+
+        title.className =
+            "task-title";
+
+        title.textContent =
+            task.title;
+
+
+        const assignee =
+            document.createElement("div");
+
+        assignee.className =
+            "task-assignee";
+
+
+        let assigneeName =
+            "Sin responsable";
+
+
+        if (task.assignee) {
+
+            const memberIndex =
+                members.findIndex(
+                    (member, index) =>
+                        getMemberId(
+                            member,
+                            index
+                        ) === String(
+                            task.assignee
+                        )
+                );
+
+
+            if (memberIndex !== -1) {
+
+                assigneeName =
+                    getMemberName(
+                        members[memberIndex]
+                    );
 
             }
-        ).join("");
+
+        }
+
+
+        assignee.textContent =
+            `👤 ${assigneeName}`;
+
+
+        content.appendChild(title);
+        content.appendChild(assignee);
+
+
+        left.appendChild(checkbox);
+        left.appendChild(content);
+
+
+        const deleteButton =
+            document.createElement("button");
+
+        deleteButton.type =
+            "button";
+
+        deleteButton.className =
+            "delete-task";
+
+        deleteButton.textContent =
+            "🗑️";
+
+        deleteButton.title =
+            "Eliminar tarea";
+
+
+        deleteButton.addEventListener(
+            "click",
+            () => deleteTask(task.id)
+        );
+
+
+        card.appendChild(left);
+        card.appendChild(deleteButton);
+
+
+        container.appendChild(card);
+
+    });
 
 }
-
 
 
 /* ==========================================
@@ -1209,14 +1196,16 @@ function renderTasks(event) {
 function toggleTask(taskId) {
 
     const data =
-        getCurrentEvent();
+        getCurrentEventData();
 
     if (!data.event) return;
 
 
     const task =
         data.event.tasks.find(
-            t => String(t.id) === String(taskId)
+            task =>
+                String(task.id) ===
+                String(taskId)
         );
 
 
@@ -1227,13 +1216,11 @@ function toggleTask(taskId) {
         !task.completed;
 
 
-    saveEventChanges();
-
+    saveCurrentEvent(data.event);
 
     loadEventPage();
 
 }
-
 
 
 /* ==========================================
@@ -1243,7 +1230,7 @@ function toggleTask(taskId) {
 function deleteTask(taskId) {
 
     const data =
-        getCurrentEvent();
+        getCurrentEventData();
 
     if (!data.event) return;
 
@@ -1251,24 +1238,49 @@ function deleteTask(taskId) {
     data.event.tasks =
         data.event.tasks.filter(
             task =>
-                String(task.id) !== String(taskId)
+                String(task.id) !==
+                String(taskId)
         );
 
 
-    saveEventChanges();
-
+    saveCurrentEvent(data.event);
 
     loadEventPage();
 
 }
 
 
-
 /* ==========================================
    PROGRESO
 ========================================== */
 
-function updateEventProgress(event) {
+function updateProgress(event) {
+
+    const members =
+        getMembers();
+
+
+    const totalParticipants =
+        members.length;
+
+
+    let accepted =
+        0;
+
+
+    members.forEach((member, index) => {
+
+        const id =
+            getMemberId(member, index);
+
+        if (
+            event.participants[id] === "yes"
+        ) {
+            accepted++;
+        }
+
+    });
+
 
     const totalTasks =
         event.tasks.length;
@@ -1280,37 +1292,17 @@ function updateEventProgress(event) {
         ).length;
 
 
-    const participants =
-        getMembers();
-
-
-    let accepted =
-        0;
-
-
-    participants.forEach(
-        (member, index) => {
-
-            const id =
-                getMemberId(
-                    member,
-                    index
-                );
-
-
-            if (
-                event.participants[id] === "yes"
-            ) {
-
-                accepted++;
-
-            }
-
-        }
-    );
-
-
+    let participantProgress = 0;
     let taskProgress = 0;
+
+
+    if (totalParticipants > 0) {
+
+        participantProgress =
+            accepted /
+            totalParticipants;
+
+    }
 
 
     if (totalTasks > 0) {
@@ -1322,24 +1314,12 @@ function updateEventProgress(event) {
     }
 
 
-    let participantProgress = 0;
-
-
-    if (participants.length > 0) {
-
-        participantProgress =
-            accepted /
-            participants.length;
-
-    }
-
-
-    let progress;
+    let progress = 0;
 
 
     if (
-        totalTasks === 0 &&
-        participants.length === 0
+        totalParticipants === 0 &&
+        totalTasks === 0
     ) {
 
         progress = 0;
@@ -1353,8 +1333,8 @@ function updateEventProgress(event) {
 
         progress =
             (
-                taskProgress * 0.5 +
-                participantProgress * 0.5
+                participantProgress * 0.5 +
+                taskProgress * 0.5
             ) * 100;
 
     }
@@ -1365,29 +1345,35 @@ function updateEventProgress(event) {
             "progressFill"
         );
 
-
     const text =
         document.getElementById(
             "progressText"
         );
 
 
-    fill.style.width =
-        `${Math.round(progress)}%`;
+    if (fill) {
+
+        fill.style.width =
+            `${Math.round(progress)}%`;
+
+    }
 
 
-    text.textContent =
-        `${Math.round(progress)}% organizado · ${completedTasks}/${totalTasks} tareas completadas`;
+    if (text) {
+
+        text.textContent =
+            `${Math.round(progress)}% organizado · ${completedTasks}/${totalTasks} tareas completadas`;
+
+    }
 
 }
 
 
-
 /* ==========================================
-   ESTADO DEL EVENTO
+   ESTADO
 ========================================== */
 
-function updateEventStatus(event) {
+function updateStatus(event) {
 
     const element =
         document.getElementById(
@@ -1395,37 +1381,34 @@ function updateEventStatus(event) {
         );
 
 
-    const totalTasks =
+    if (!element) return;
+
+
+    const total =
         event.tasks.length;
 
 
-    const completedTasks =
+    const completed =
         event.tasks.filter(
             task => task.completed
         ).length;
 
 
-    if (
-        totalTasks === 0
-    ) {
+    if (total === 0) {
 
         element.textContent =
             "🟡 Organización pendiente";
 
         return;
-
     }
 
 
-    if (
-        completedTasks === totalTasks
-    ) {
+    if (completed === total) {
 
         element.textContent =
             "🟢 Todo preparado";
 
         return;
-
     }
 
 
@@ -1435,9 +1418,8 @@ function updateEventStatus(event) {
 }
 
 
-
 /* ==========================================
-   SEGURIDAD BÁSICA PARA TEXTO
+   ESCAPE DE TEXTO
 ========================================== */
 
 function escapeHtml(value) {
@@ -1452,16 +1434,15 @@ function escapeHtml(value) {
 }
 
 
-
 /* ==========================================
    INICIAR
 ========================================== */
 
+setupTaskForm();
+
 loadEventPage();
 
-
 </script>
-
 
 </body>
 
