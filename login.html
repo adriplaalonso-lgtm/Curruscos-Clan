@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Entrar · Curruscos Clan</title>
+
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+
+    <main class="login-page">
+
+        <section class="login-card">
+
+            <div class="login-header">
+                <span class="eyebrow">CURRUSCOS CLAN</span>
+
+                <h1>Bienvenido al Clan.</h1>
+
+                <p>
+                    Crea tu cuenta o entra para acceder a vuestro espacio.
+                </p>
+            </div>
+
+            <form id="loginForm">
+
+                <label for="email">Correo electrónico</label>
+
+                <input
+                    type="email"
+                    id="email"
+                    placeholder="tu@email.com"
+                    required
+                >
+
+                <label for="password">Contraseña</label>
+
+                <input
+                    type="password"
+                    id="password"
+                    placeholder="Mínimo 6 caracteres"
+                    minlength="6"
+                    required
+                >
+
+                <button
+                    type="submit"
+                    class="button button-primary"
+                >
+                    Entrar
+                </button>
+
+            </form>
+
+            <div class="login-divider">
+                <span>o</span>
+            </div>
+
+            <button
+                id="registerButton"
+                class="button button-secondary"
+                type="button"
+            >
+                Crear cuenta
+            </button>
+
+            <p id="loginMessage" class="login-message"></p>
+
+        </section>
+
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/supabase.js"></script>
+
+    <script>
+
+        const form = document.getElementById("loginForm");
+        const registerButton = document.getElementById("registerButton");
+        const message = document.getElementById("loginMessage");
+
+        form.addEventListener("submit", async (event) => {
+
+            event.preventDefault();
+
+            const email = document.getElementById("email").value.trim();
+            const password = document.getElementById("password").value;
+
+            message.textContent = "Entrando...";
+
+            const { error } = await supabaseClient.auth.signInWithPassword({
+                email,
+                password
+            });
+
+            if (error) {
+                message.textContent = error.message;
+                return;
+            }
+
+            window.location.href = "index.html";
+        });
+
+
+        registerButton.addEventListener("click", async () => {
+
+            const email = document.getElementById("email").value.trim();
+            const password = document.getElementById("password").value;
+
+            if (!email || !password) {
+                message.textContent =
+                    "Escribe un correo y una contraseña.";
+                return;
+            }
+
+            message.textContent = "Creando cuenta...";
+
+            const { error } = await supabaseClient.auth.signUp({
+                email,
+                password
+            });
+
+            if (error) {
+                message.textContent = error.message;
+                return;
+            }
+
+            message.textContent =
+                "Cuenta creada. Revisa tu correo para confirmar la cuenta.";
+        });
+
+    </script>
+
+</body>
+</html>
