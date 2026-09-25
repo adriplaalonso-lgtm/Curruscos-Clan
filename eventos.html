@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Eventos — Curruscos Clan</title>
+
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+
+    <header class="navbar">
+
+        <a href="index.html" class="logo">
+            CURRUSCOS.
+        </a>
+
+        <nav id="mainNav">
+            <a href="index.html">Inicio</a>
+            <a href="miembros.html">Miembros</a>
+            <a href="historia.html">Historia</a>
+            <a href="recuerdos.html">Recuerdos</a>
+            <a href="eventos.html" class="active">Eventos</a>
+        </nav>
+
+        <button id="menuButton" class="menu-button">
+            ☰
+        </button>
+
+    </header>
+
+
+    <main>
+
+        <section class="page-hero">
+
+            <div class="container">
+
+                <span class="eyebrow">
+                    ORGANIZACIÓN
+                </span>
+
+                <h1>
+                    ¿Qué hacemos<br>
+                    próximamente?
+                </h1>
+
+                <p>
+                    Quedadas, viajes, cumpleaños y cualquier plan del clan.
+                </p>
+
+            </div>
+
+        </section>
+
+
+        <section class="section">
+
+            <div class="container">
+
+                <div class="section-heading">
+                    <span class="eyebrow">PRÓXIMOS PLANES</span>
+                    <h2>Eventos</h2>
+                </div>
+
+                <div id="eventsList" class="events-list"></div>
+
+            </div>
+
+        </section>
+
+
+        <section class="section create-event-section">
+
+            <div class="container">
+
+                <div class="section-heading">
+                    <span class="eyebrow">NUEVO PLAN</span>
+                    <h2>Crear evento</h2>
+                    <p>
+                        Organiza la próxima quedada del clan.
+                    </p>
+                </div>
+
+
+                <form id="eventForm" class="event-form">
+
+                    <div class="form-group">
+                        <label for="eventTitle">
+                            Nombre del evento
+                        </label>
+
+                        <input
+                            type="text"
+                            id="eventTitle"
+                            placeholder="Ej. Cena del clan"
+                            required
+                        >
+                    </div>
+
+
+                    <div class="form-row">
+
+                        <div class="form-group">
+                            <label for="eventDate">
+                                Fecha
+                            </label>
+
+                            <input
+                                type="date"
+                                id="eventDate"
+                                required
+                            >
+                        </div>
+
+
+                        <div class="form-group">
+                            <label for="eventTime">
+                                Hora
+                            </label>
+
+                            <input
+                                type="time"
+                                id="eventTime"
+                                required
+                            >
+                        </div>
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label for="eventLocation">
+                            Lugar
+                        </label>
+
+                        <input
+                            type="text"
+                            id="eventLocation"
+                            placeholder="Ej. Palencia"
+                            required
+                        >
+
+                    </div>
+
+
+                    <div class="form-group">
+
+                        <label for="eventDescription">
+                            Descripción
+                        </label>
+
+                        <textarea
+                            id="eventDescription"
+                            placeholder="Cuenta de qué va el plan..."
+                            rows="4"
+                        ></textarea>
+
+                    </div>
+
+
+                    <button type="submit" class="button button-primary">
+                        Crear evento
+                    </button>
+
+                </form>
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <footer class="footer">
+
+        <div class="container">
+
+            <p>
+                CURRUSCOS CLAN © 2026
+            </p>
+
+        </div>
+
+    </footer>
+
+
+    <script src="js/data.js"></script>
+    <script src="js/app.js"></script>
+
+</body>
+
+</html>
