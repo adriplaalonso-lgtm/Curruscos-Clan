@@ -742,18 +742,16 @@
 
     <section class="event-page">
 
-        <!-- VOLVER -->
-
         <a href="eventos.html" class="event-back">
             ← Volver a eventos
         </a>
 
 
-        <!-- ================================
-             CABECERA DEL EVENTO
-             ================================ -->
-
         <div class="event-page-card">
+
+            <!-- =====================================
+                 CABECERA
+                 ===================================== -->
 
             <div class="event-hero">
 
@@ -780,9 +778,9 @@
             </div>
 
 
-            <!-- ================================
-                 INFORMACIÓN
-                 ================================ -->
+            <!-- =====================================
+                 INFORMACIÓN DEL EVENTO
+                 ===================================== -->
 
             <div class="event-main-info">
 
@@ -860,14 +858,16 @@
             </div>
 
 
-            <!-- ================================
+            <!-- =====================================
                  CONTENIDO
-                 ================================ -->
+                 ===================================== -->
 
             <div class="event-content">
 
 
-                <!-- ORGANIZACIÓN -->
+                <!-- =================================
+                     ORGANIZACIÓN
+                     ================================= -->
 
                 <section class="event-section">
 
@@ -894,8 +894,6 @@
                     </div>
 
 
-                    <!-- PROGRESO -->
-
                     <div class="progress-container">
 
                         <div class="progress-header">
@@ -919,7 +917,7 @@
                             <div
                                 id="progressFill"
                                 class="progress-fill"
-                                style="width: 0%;"
+                                style="width:0%;"
                             ></div>
 
                         </div>
@@ -932,9 +930,9 @@
                 <div class="event-divider"></div>
 
 
-                <!-- ================================
+                <!-- =================================
                      PARTICIPANTES
-                     ================================ -->
+                     ================================= -->
 
                 <section class="event-section">
 
@@ -952,8 +950,6 @@
 
                     </div>
 
-
-                    <!-- RESUMEN -->
 
                     <div class="participants-summary">
 
@@ -1007,8 +1003,6 @@
                     </div>
 
 
-                    <!-- PERSONAS -->
-
                     <div
                         id="participantsList"
                         class="participants-list"
@@ -1020,9 +1014,9 @@
                 <div class="event-divider"></div>
 
 
-                <!-- ================================
+                <!-- =================================
                      TAREAS
-                     ================================ -->
+                     ================================= -->
 
                 <section class="event-section">
 
@@ -1040,8 +1034,6 @@
 
                     </div>
 
-
-                    <!-- FORMULARIO -->
 
                     <form
                         id="taskForm"
@@ -1074,8 +1066,6 @@
                     </form>
 
 
-                    <!-- TAREAS -->
-
                     <div
                         id="tasksList"
                         class="tasks-list"
@@ -1083,6 +1073,154 @@
 
                 </section>
 
+
+                <div class="event-divider"></div>
+
+
+                <!-- =================================
+                     GASTOS
+                     ================================= -->
+
+                <section class="event-section">
+
+                    <div class="event-section-header">
+
+                        <h2 class="event-section-title">
+
+                            <span class="event-section-title-icon">
+                                €
+                            </span>
+
+                            Gastos
+
+                        </h2>
+
+                    </div>
+
+
+                    <!-- RESUMEN ECONÓMICO -->
+
+                    <div class="expense-summary">
+
+                        <div class="expense-total-card">
+
+                            <span class="expense-summary-label">
+                                Gasto total
+                            </span>
+
+                            <strong
+                                id="expensesTotal"
+                                class="expense-total"
+                            >
+                                0,00 €
+                            </strong>
+
+                        </div>
+
+
+                        <div class="expense-total-card">
+
+                            <span class="expense-summary-label">
+                                Gastos
+                            </span>
+
+                            <strong
+                                id="expensesCount"
+                                class="expense-total-small"
+                            >
+                                0
+                            </strong>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- AÑADIR GASTO -->
+
+                    <form
+                        id="expenseForm"
+                        class="expense-form"
+                    >
+
+                        <div class="expense-input-group">
+
+                            <label for="expenseTitle">
+                                Concepto
+                            </label>
+
+                            <input
+                                type="text"
+                                id="expenseTitle"
+                                placeholder="Ej. Cena"
+                                maxlength="100"
+                                required
+                            >
+
+                        </div>
+
+
+                        <div class="expense-input-group">
+
+                            <label for="expenseAmount">
+                                Cantidad
+                            </label>
+
+                            <input
+                                type="number"
+                                id="expenseAmount"
+                                placeholder="0,00"
+                                min="0.01"
+                                step="0.01"
+                                required
+                            >
+
+                        </div>
+
+
+                        <div class="expense-input-group">
+
+                            <label for="expensePayer">
+                                Lo ha pagado
+                            </label>
+
+                            <select id="expensePayer">
+
+                                <option value="">
+                                    Seleccionar persona
+                                </option>
+
+                            </select>
+
+                        </div>
+
+
+                        <button
+                            type="submit"
+                            class="expense-add-button"
+                        >
+                            + Añadir gasto
+                        </button>
+
+                    </form>
+
+
+                    <!-- LISTA DE GASTOS -->
+
+                    <div
+                        id="expensesList"
+                        class="expenses-list"
+                    ></div>
+
+
+                    <!-- REPARTO -->
+
+                    <div
+                        id="expenseSplit"
+                        class="expense-split"
+                    ></div>
+
+                </section>
 
             </div>
 
@@ -1095,11 +1233,6 @@
 
 <footer class="footer">
 
-    <script src="js/data.js"></script>
-<script src="js/app.js"></script>
-
-<script>
-
     <div class="container">
 
         <p>
@@ -1111,924 +1244,1458 @@
 </footer>
 
 
-
 <script src="js/data.js"></script>
 <script src="js/app.js"></script>
 
 
+<style>
+
+    /* ==========================================
+       GASTOS
+       ========================================== */
+
+    .expense-summary {
+        display: grid;
+        grid-template-columns: 2fr 1fr;
+        gap: 12px;
+        margin-bottom: 16px;
+    }
+
+    .expense-total-card {
+        padding: 20px;
+        border: 1px solid #e6e6e6;
+        border-radius: 16px;
+        background: #fafafa;
+    }
+
+    .expense-summary-label {
+        display: block;
+        margin-bottom: 7px;
+        color: #888;
+        font-size: 11px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: .5px;
+    }
+
+    .expense-total {
+        display: block;
+        color: #111;
+        font-size: 28px;
+        font-weight: 800;
+        letter-spacing: -1px;
+    }
+
+    .expense-total-small {
+        display: block;
+        color: #111;
+        font-size: 28px;
+        font-weight: 800;
+    }
+
+
+    .expense-form {
+        display: grid;
+        grid-template-columns: 1.5fr .8fr 1fr auto;
+        gap: 10px;
+        padding: 17px;
+        margin-bottom: 18px;
+        border: 1px solid #e6e6e6;
+        border-radius: 16px;
+        background: #f8f8f8;
+    }
+
+    .expense-input-group {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+    }
+
+    .expense-input-group label {
+        color: #777;
+        font-size: 11px;
+        font-weight: 700;
+    }
+
+    .expense-input-group input,
+    .expense-input-group select {
+        width: 100%;
+        height: 45px;
+        box-sizing: border-box;
+        padding: 0 12px;
+        border: 1px solid #ddd;
+        border-radius: 10px;
+        background: white;
+        color: #222;
+        font-size: 13px;
+        outline: none;
+    }
+
+    .expense-input-group input:focus,
+    .expense-input-group select:focus {
+        border-color: #111;
+    }
+
+    .expense-add-button {
+        align-self: end;
+        height: 45px;
+        padding: 0 17px;
+        border: 0;
+        border-radius: 10px;
+        background: #111;
+        color: white;
+        font-size: 13px;
+        font-weight: 800;
+        cursor: pointer;
+        transition: .2s ease;
+    }
+
+    .expense-add-button:hover {
+        background: #292929;
+        transform: translateY(-1px);
+    }
+
+
+    .expenses-list {
+        display: flex;
+        flex-direction: column;
+        gap: 9px;
+    }
+
+    .expense-card {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 15px;
+        padding: 15px 17px;
+        border: 1px solid #e6e6e6;
+        border-radius: 14px;
+        background: white;
+    }
+
+    .expense-card-left {
+        display: flex;
+        align-items: center;
+        gap: 13px;
+        min-width: 0;
+    }
+
+    .expense-icon {
+        width: 42px;
+        height: 42px;
+        flex-shrink: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 11px;
+        background: #f1f1f1;
+        color: #222;
+        font-size: 18px;
+        font-weight: 800;
+    }
+
+    .expense-information {
+        min-width: 0;
+    }
+
+    .expense-name {
+        display: block;
+        color: #111;
+        font-size: 14px;
+        font-weight: 800;
+    }
+
+    .expense-payer {
+        display: block;
+        margin-top: 4px;
+        color: #888;
+        font-size: 11px;
+        font-weight: 600;
+    }
+
+    .expense-amount {
+        flex-shrink: 0;
+        color: #111;
+        font-size: 16px;
+        font-weight: 800;
+    }
+
+    .expense-delete {
+        border: 0;
+        background: transparent;
+        color: #aaa;
+        padding: 7px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 15px;
+    }
+
+    .expense-delete:hover {
+        background: #f1f1f1;
+        color: #222;
+    }
+
+
+    .expense-split {
+        margin-top: 18px;
+        padding: 20px;
+        border: 1px solid #e6e6e6;
+        border-radius: 16px;
+        background: #fafafa;
+    }
+
+    .expense-split-title {
+        margin-bottom: 15px;
+        color: #222;
+        font-size: 14px;
+        font-weight: 800;
+    }
+
+    .expense-person-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 15px;
+        padding: 10px 0;
+        border-bottom: 1px solid #e9e9e9;
+    }
+
+    .expense-person-row:last-child {
+        border-bottom: 0;
+    }
+
+    .expense-person-name {
+        color: #333;
+        font-size: 13px;
+        font-weight: 700;
+    }
+
+    .expense-person-share {
+        color: #111;
+        font-size: 13px;
+        font-weight: 800;
+    }
+
+    .expense-empty {
+        padding: 28px 20px;
+        border: 1px dashed #d8d8d8;
+        border-radius: 14px;
+        background: #fafafa;
+        color: #999;
+        text-align: center;
+        font-size: 13px;
+        font-weight: 600;
+    }
+
+
+    @media (max-width: 850px) {
+
+        .expense-form {
+            grid-template-columns: 1fr 1fr;
+        }
+
+        .expense-add-button {
+            grid-column: 1 / -1;
+        }
+
+    }
+
+
+    @media (max-width: 600px) {
+
+        .expense-summary {
+            grid-template-columns: 1fr 1fr;
+        }
+
+        .expense-total {
+            font-size: 23px;
+        }
+
+        .expense-total-small {
+            font-size: 23px;
+        }
+
+        .expense-form {
+            grid-template-columns: 1fr;
+        }
+
+        .expense-add-button {
+            grid-column: auto;
+        }
+
+        .expense-card {
+            padding: 13px;
+        }
+
+        .expense-amount {
+            font-size: 14px;
+        }
+
+    }
+
+</style>
+
+
 <script>
 
-/* ==========================================
-   DATOS DEL EVENTO
-========================================== */
+    /* =====================================================
+       DATOS
+       ===================================================== */
 
-function getCurrentEventData() {
-
-    const params = new URLSearchParams(window.location.search);
-    const eventId = params.get("id");
-
-    const events =
-        JSON.parse(localStorage.getItem("curruscos_events")) || [];
-
-    const event = events.find(
-        e => String(e.id) === String(eventId)
-    );
-
-    return {
-        event,
-        events,
-        eventId
-    };
-}
+    let currentEvent = null;
 
 
-/* ==========================================
-   MIEMBROS
-========================================== */
+    function getMembers() {
 
-function getMembers() {
+        if (
+            typeof CURRUSCOS_DATA !== "undefined" &&
+            Array.isArray(CURRUSCOS_DATA.members)
+        ) {
+            return CURRUSCOS_DATA.members;
+        }
 
-    if (
-        typeof CURRUSCOS_DATA !== "undefined" &&
-        Array.isArray(CURRUSCOS_DATA.members)
-    ) {
-        return CURRUSCOS_DATA.members;
+        return [];
     }
 
-    return [];
-}
+
+    function getMemberName(member) {
+
+        return (
+            member.name ||
+            member.nombre ||
+            member.username ||
+            member.user ||
+            "Miembro"
+        );
+
+    }
 
 
-function getMemberName(member) {
+    function getMemberId(member, index) {
 
-    return (
-        member.name ||
-        member.nombre ||
-        member.username ||
-        member.nombreCompleto ||
-        "Miembro"
-    );
-}
+        return String(
+            member.id ??
+            member._id ??
+            member.name ??
+            member.nombre ??
+            index
+        );
 
-
-function getMemberId(member, index) {
-
-    return String(
-        member.id ??
-        member._id ??
-        member.name ??
-        member.nombre ??
-        index
-    );
-}
+    }
 
 
-/* ==========================================
-   GUARDAR EVENTO
-========================================== */
+    function escapeHtml(value) {
 
-function saveCurrentEvent(event) {
+        return String(value ?? "")
+            .replaceAll("&", "&amp;")
+            .replaceAll("<", "&lt;")
+            .replaceAll(">", "&gt;")
+            .replaceAll('"', "&quot;")
+            .replaceAll("'", "&#039;");
 
-    const data = getCurrentEventData();
-
-    if (!data.event) return;
-
-    const index = data.events.findIndex(
-        e => String(e.id) === String(event.id)
-    );
-
-    if (index === -1) return;
-
-    data.events[index] = event;
-
-    localStorage.setItem(
-        "curruscos_events",
-        JSON.stringify(data.events)
-    );
-}
+    }
 
 
-/* ==========================================
-   CARGAR EVENTO
-========================================== */
+    function saveEvent() {
 
-function loadEventPage() {
+        const events =
+            JSON.parse(
+                localStorage.getItem("curruscos_events") || "[]"
+            );
 
-    const data = getCurrentEventData();
-    const event = data.event;
+        const index = events.findIndex(
+            event =>
+                String(event.id) ===
+                String(currentEvent.id)
+        );
 
-    if (!event) {
+        if (index !== -1) {
+
+            events[index] = currentEvent;
+
+            localStorage.setItem(
+                "curruscos_events",
+                JSON.stringify(events)
+            );
+
+        }
+
+    }
+
+
+    /* =====================================================
+       CARGAR EVENTO
+       ===================================================== */
+
+    function loadEvent() {
+
+        const params =
+            new URLSearchParams(window.location.search);
+
+        const eventId = params.get("id");
+
+        const events =
+            JSON.parse(
+                localStorage.getItem("curruscos_events") || "[]"
+            );
+
+        currentEvent = events.find(
+            event =>
+                String(event.id) ===
+                String(eventId)
+        );
+
+        if (!currentEvent) {
+
+            document.getElementById("eventTitle").textContent =
+                "Evento no encontrado";
+
+            return;
+
+        }
+
+
+        if (!Array.isArray(currentEvent.participants)) {
+
+            currentEvent.participants = [];
+
+        }
+
+
+        if (!Array.isArray(currentEvent.tasks)) {
+
+            currentEvent.tasks = [];
+
+        }
+
+
+        if (!Array.isArray(currentEvent.expenses)) {
+
+            currentEvent.expenses = [];
+
+        }
+
 
         document.getElementById("eventTitle").textContent =
-            "Evento no encontrado";
+            currentEvent.title || "Sin título";
+
 
         document.getElementById("eventDescription").textContent =
-            "Este evento no existe o ha sido eliminado.";
+            currentEvent.description || "Sin descripción";
 
-        return;
+
+        document.getElementById("eventDate").textContent =
+            currentEvent.date || "Sin fecha";
+
+
+        document.getElementById("eventTime").textContent =
+            currentEvent.time || "Sin hora";
+
+
+        document.getElementById("eventLocation").textContent =
+            currentEvent.location || "Sin lugar";
+
+
+        renderParticipants();
+
+        renderTaskAssignees();
+
+        renderTasks();
+
+        renderExpenses();
+
+        updateProgress();
+
+        updateStatus();
+
     }
 
 
-    /* Estructura inicial */
+    /* =====================================================
+       PARTICIPANTES
+       ===================================================== */
 
-    if (!event.participants) {
-        event.participants = {};
-    }
+    function renderParticipants() {
 
-    if (!Array.isArray(event.tasks)) {
-        event.tasks = [];
-    }
+        const members = getMembers();
 
+        const container =
+            document.getElementById("participantsList");
 
-    /* Datos principales */
+        container.innerHTML = "";
 
-    document.getElementById("eventTitle").textContent =
-        event.title || "Evento";
 
+        let yes = 0;
+        let no = 0;
+        let pending = 0;
 
-    document.getElementById("eventDescription").textContent =
-        event.description || "";
 
+        members.forEach((member, index) => {
 
-    document.getElementById("eventInfo").innerHTML = `
+            const memberId =
+                getMemberId(member, index);
 
-        <div class="event-main-info">
+            const name =
+                getMemberName(member);
 
-            <div class="event-info-box">
-                <span>FECHA</span>
-                <strong>📅 ${event.date || "Sin fecha"}</strong>
-            </div>
 
-            <div class="event-info-box">
-                <span>HORA</span>
-                <strong>🕐 ${event.time || "Sin hora"}</strong>
-            </div>
+            let participant =
+                currentEvent.participants.find(
+                    person =>
+                        String(person.id) ===
+                        String(memberId)
+                );
 
-            <div class="event-info-box">
-                <span>LUGAR</span>
-                <strong>📍 ${escapeHtml(event.location || "Sin lugar")}</strong>
-            </div>
 
-        </div>
+            if (!participant) {
 
-    `;
+                participant = {
+                    id: memberId,
+                    status: "pending"
+                };
 
-
-    saveCurrentEvent(event);
-
-    renderParticipants(event);
-    renderTaskAssignees(event);
-    renderTasks(event);
-    updateProgress(event);
-    updateStatus(event);
-}
-
-
-/* ==========================================
-   PARTICIPANTES
-========================================== */
-
-function renderParticipants(event) {
-
-    const members = getMembers();
-
-    const list =
-        document.getElementById("participantsList");
-
-    const summary =
-        document.getElementById("participantsSummary");
-
-
-    if (!members.length) {
-
-        list.innerHTML = `
-            <div class="event-page-card">
-                No se han encontrado miembros.
-            </div>
-        `;
-
-        return;
-    }
-
-
-    let yes = 0;
-    let no = 0;
-    let pending = 0;
-
-
-    list.innerHTML = "";
-
-
-    members.forEach((member, index) => {
-
-        const memberId =
-            getMemberId(member, index);
-
-        const memberName =
-            getMemberName(member);
-
-        const status =
-            event.participants[memberId] || "pending";
-
-
-        if (status === "yes") yes++;
-        else if (status === "no") no++;
-        else pending++;
-
-
-        const card =
-            document.createElement("div");
-
-        card.className =
-            "participant-card";
-
-
-        const name =
-            document.createElement("div");
-
-        name.className =
-            "participant-name";
-
-        name.textContent =
-            memberName;
-
-
-        const actions =
-            document.createElement("div");
-
-        actions.className =
-            "participant-actions";
-
-
-        const yesButton =
-            document.createElement("button");
-
-        yesButton.type = "button";
-        yesButton.textContent = "✅ Va";
-
-        if (status === "yes") {
-            yesButton.classList.add("active");
-        }
-
-
-        const noButton =
-            document.createElement("button");
-
-        noButton.type = "button";
-        noButton.textContent = "❌ No va";
-
-        if (status === "no") {
-            noButton.classList.add("active");
-        }
-
-
-        const pendingButton =
-            document.createElement("button");
-
-        pendingButton.type = "button";
-        pendingButton.textContent = "❓ Pendiente";
-
-        if (status === "pending") {
-            pendingButton.classList.add("active");
-        }
-
-
-        yesButton.addEventListener(
-            "click",
-            () => changeParticipant(
-                memberId,
-                "yes"
-            )
-        );
-
-
-        noButton.addEventListener(
-            "click",
-            () => changeParticipant(
-                memberId,
-                "no"
-            )
-        );
-
-
-        pendingButton.addEventListener(
-            "click",
-            () => changeParticipant(
-                memberId,
-                "pending"
-            )
-        );
-
-
-        actions.appendChild(yesButton);
-        actions.appendChild(noButton);
-        actions.appendChild(pendingButton);
-
-
-        card.appendChild(name);
-        card.appendChild(actions);
-
-        list.appendChild(card);
-
-    });
-
-
-    summary.innerHTML = `
-
-        <div class="summary-badge">
-            🟢 ${yes} van
-        </div>
-
-        <div class="summary-badge">
-            🔴 ${no} no van
-        </div>
-
-        <div class="summary-badge">
-            🟡 ${pending} pendientes
-        </div>
-
-    `;
-}
-
-
-/* ==========================================
-   CAMBIAR PARTICIPANTE
-========================================== */
-
-function changeParticipant(memberId, status) {
-
-    const data = getCurrentEventData();
-
-    if (!data.event) return;
-
-
-    if (!data.event.participants) {
-        data.event.participants = {};
-    }
-
-
-    data.event.participants[String(memberId)] =
-        status;
-
-
-    saveCurrentEvent(data.event);
-
-    loadEventPage();
-}
-
-
-/* ==========================================
-   RESPONSABLES DE TAREAS
-========================================== */
-
-function renderTaskAssignees(event) {
-
-    const select =
-        document.getElementById("taskAssignee");
-
-    if (!select) return;
-
-
-    const members = getMembers();
-
-
-    select.innerHTML = "";
-
-
-    const emptyOption =
-        document.createElement("option");
-
-    emptyOption.value = "";
-    emptyOption.textContent =
-        "Sin responsable";
-
-    select.appendChild(emptyOption);
-
-
-    members.forEach((member, index) => {
-
-        const option =
-            document.createElement("option");
-
-        option.value =
-            getMemberId(member, index);
-
-        option.textContent =
-            getMemberName(member);
-
-        select.appendChild(option);
-
-    });
-
-}
-
-
-/* ==========================================
-   FORMULARIO DE TAREAS
-========================================== */
-
-function setupTaskForm() {
-
-    const form =
-        document.getElementById("taskForm");
-
-    if (!form) return;
-
-
-    form.addEventListener(
-        "submit",
-        function(event) {
-
-            event.preventDefault();
-
-
-            const titleInput =
-                document.getElementById("taskTitle");
-
-            const assigneeInput =
-                document.getElementById("taskAssignee");
-
-
-            const title =
-                titleInput.value.trim();
-
-            const assignee =
-                assigneeInput.value;
-
-
-            if (!title) {
-                titleInput.focus();
-                return;
             }
 
 
-            const data =
-                getCurrentEventData();
+            if (participant.status === "yes") yes++;
+            else if (participant.status === "no") no++;
+            else pending++;
 
 
-            if (!data.event) return;
+            const initials =
+                name
+                    .split(" ")
+                    .filter(Boolean)
+                    .slice(0, 2)
+                    .map(word => word[0])
+                    .join("")
+                    .toUpperCase();
 
 
-            if (!Array.isArray(data.event.tasks)) {
-                data.event.tasks = [];
+            let statusText =
+                "❓ Pendiente";
+
+            if (participant.status === "yes") {
+
+                statusText = "✅ Va";
+
+            }
+
+            if (participant.status === "no") {
+
+                statusText = "❌ No va";
+
             }
 
 
-            data.event.tasks.push({
+            const card =
+                document.createElement("div");
 
-                id: Date.now(),
+            card.className =
+                "participant-card";
 
-                title: title,
 
-                assignee: assignee,
+            card.innerHTML = `
 
-                completed: false
+                <div class="participant-main">
+
+                    <div class="participant-avatar">
+                        ${escapeHtml(initials)}
+                    </div>
+
+                    <div class="participant-information">
+
+                        <span class="participant-name">
+                            ${escapeHtml(name)}
+                        </span>
+
+                        <span class="participant-status-text">
+                            ${statusText}
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+                <div class="participant-actions">
+
+                    <button
+                        type="button"
+                        title="Va"
+                        class="${participant.status === "yes" ? "active" : ""}"
+                    >
+                        ✓
+                    </button>
+
+                    <button
+                        type="button"
+                        title="No va"
+                        class="${participant.status === "no" ? "active" : ""}"
+                    >
+                        ✕
+                    </button>
+
+                    <button
+                        type="button"
+                        title="Pendiente"
+                        class="${participant.status === "pending" ? "active" : ""}"
+                    >
+                        ?
+                    </button>
+
+                </div>
+
+            `;
+
+
+            const buttons =
+                card.querySelectorAll("button");
+
+
+            buttons[0].addEventListener(
+                "click",
+                () =>
+                    changeParticipant(
+                        memberId,
+                        "yes"
+                    )
+            );
+
+
+            buttons[1].addEventListener(
+                "click",
+                () =>
+                    changeParticipant(
+                        memberId,
+                        "no"
+                    )
+            );
+
+
+            buttons[2].addEventListener(
+                "click",
+                () =>
+                    changeParticipant(
+                        memberId,
+                        "pending"
+                    )
+            );
+
+
+            container.appendChild(card);
+
+        });
+
+
+        document.getElementById("participantsYes")
+            .textContent = yes;
+
+
+        document.getElementById("participantsNo")
+            .textContent = no;
+
+
+        document.getElementById("participantsPending")
+            .textContent = pending;
+
+    }
+
+
+    function changeParticipant(memberId, status) {
+
+        const existing =
+            currentEvent.participants.find(
+                person =>
+                    String(person.id) ===
+                    String(memberId)
+            );
+
+
+        if (existing) {
+
+            existing.status = status;
+
+        } else {
+
+            currentEvent.participants.push({
+
+                id: String(memberId),
+
+                status: status
+
+            });
+
+        }
+
+
+        saveEvent();
+
+        renderParticipants();
+
+        renderTaskAssignees();
+
+        renderExpenses();
+
+        updateProgress();
+
+        updateStatus();
+
+    }
+
+
+    /* =====================================================
+       RESPONSABLES DE TAREAS Y GASTOS
+       ===================================================== */
+
+    function renderTaskAssignees() {
+
+        const members = getMembers();
+
+        const selects = [
+
+            document.getElementById("taskAssignee"),
+
+            document.getElementById("expensePayer")
+
+        ];
+
+
+        selects.forEach(select => {
+
+            if (!select) return;
+
+
+            const oldValue =
+                select.value;
+
+
+            select.innerHTML = `
+
+                <option value="">
+                    ${select.id === "expensePayer"
+                        ? "Seleccionar persona"
+                        : "Sin responsable"}
+                </option>
+
+            `;
+
+
+            members.forEach((member, index) => {
+
+                const id =
+                    getMemberId(member, index);
+
+                const name =
+                    getMemberName(member);
+
+
+                const option =
+                    document.createElement("option");
+
+                option.value = id;
+
+                option.textContent = name;
+
+                select.appendChild(option);
 
             });
 
 
-            saveCurrentEvent(data.event);
+            select.value = oldValue;
+
+        });
+
+    }
 
 
-            titleInput.value = "";
-            assigneeInput.value = "";
+    /* =====================================================
+       TAREAS
+       ===================================================== */
+
+    function renderTasks() {
+
+        const container =
+            document.getElementById("tasksList");
+
+        container.innerHTML = "";
 
 
-            loadEventPage();
+        if (!currentEvent.tasks.length) {
+
+            return;
 
         }
-    );
-
-}
 
 
-/* ==========================================
-   MOSTRAR TAREAS
-========================================== */
+        currentEvent.tasks.forEach(task => {
 
-function renderTasks(event) {
+            const card =
+                document.createElement("div");
 
-    const container =
-        document.getElementById("tasksList");
-
-
-    container.innerHTML = "";
+            card.className =
+                "task-card";
 
 
-    if (!event.tasks.length) {
+            card.innerHTML = `
 
-        container.innerHTML = `
+                <div class="task-left">
 
-            <div class="event-page-card">
+                    <input
+                        type="checkbox"
+                        class="task-checkbox"
+                        ${task.completed ? "checked" : ""}
+                    >
 
-                <p>
-                    Todavía no hay tareas.
-                </p>
+                    <div class="task-information">
 
+                        <span class="task-title ${task.completed ? "task-completed" : ""}">
+                            ${escapeHtml(task.title)}
+                        </span>
+
+                        ${
+                            task.assignee
+                            ?
+                            `<span class="task-assignee">
+                                👤 ${escapeHtml(
+                                    getAssigneeName(task.assignee)
+                                )}
+                            </span>`
+                            :
+                            ""
+                        }
+
+                    </div>
+
+                </div>
+
+
+                <button
+                    type="button"
+                    class="delete-task"
+                    title="Eliminar tarea"
+                >
+                    🗑
+                </button>
+
+            `;
+
+
+            card.querySelector(".task-checkbox")
+                .addEventListener(
+                    "change",
+                    () => {
+
+                        task.completed =
+                            !task.completed;
+
+                        saveEvent();
+
+                        renderTasks();
+
+                        updateProgress();
+
+                        updateStatus();
+
+                    }
+                );
+
+
+            card.querySelector(".delete-task")
+                .addEventListener(
+                    "click",
+                    () => {
+
+                        currentEvent.tasks =
+                            currentEvent.tasks.filter(
+                                item =>
+                                    String(item.id) !==
+                                    String(task.id)
+                            );
+
+                        saveEvent();
+
+                        renderTasks();
+
+                        updateProgress();
+
+                        updateStatus();
+
+                    }
+                );
+
+
+            container.appendChild(card);
+
+        });
+
+    }
+
+
+    function getAssigneeName(id) {
+
+        const members = getMembers();
+
+        const index =
+            members.findIndex(
+                (member, position) =>
+                    String(
+                        getMemberId(member, position)
+                    ) === String(id)
+            );
+
+
+        if (index === -1) {
+
+            return "Miembro";
+
+        }
+
+
+        return getMemberName(
+            members[index]
+        );
+
+    }
+
+
+    document
+        .getElementById("taskForm")
+        .addEventListener(
+            "submit",
+            function(event) {
+
+                event.preventDefault();
+
+
+                const title =
+                    document
+                        .getElementById("taskTitle")
+                        .value
+                        .trim();
+
+
+                const assignee =
+                    document
+                        .getElementById("taskAssignee")
+                        .value;
+
+
+                if (!title) return;
+
+
+                currentEvent.tasks.push({
+
+                    id: Date.now(),
+
+                    title: title,
+
+                    assignee: assignee,
+
+                    completed: false
+
+                });
+
+
+                saveEvent();
+
+
+                document
+                    .getElementById("taskTitle")
+                    .value = "";
+
+
+                document
+                    .getElementById("taskAssignee")
+                    .value = "";
+
+
+                renderTasks();
+
+                updateProgress();
+
+                updateStatus();
+
+            }
+        );
+
+
+    /* =====================================================
+       GASTOS
+       ===================================================== */
+
+    function renderExpenses() {
+
+        const container =
+            document.getElementById("expensesList");
+
+
+        container.innerHTML = "";
+
+
+        const expenses =
+            currentEvent.expenses || [];
+
+
+        let total = 0;
+
+
+        expenses.forEach(expense => {
+
+            total +=
+                Number(expense.amount) || 0;
+
+
+            const card =
+                document.createElement("div");
+
+            card.className =
+                "expense-card";
+
+
+            card.innerHTML = `
+
+                <div class="expense-card-left">
+
+                    <div class="expense-icon">
+                        €
+                    </div>
+
+                    <div class="expense-information">
+
+                        <span class="expense-name">
+                            ${escapeHtml(
+                                expense.title
+                            )}
+                        </span>
+
+                        <span class="expense-payer">
+                            Pagado por
+                            <strong>
+                                ${escapeHtml(
+                                    getAssigneeName(
+                                        expense.payer
+                                    )
+                                )}
+                            </strong>
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+                <div class="expense-amount">
+                    ${formatMoney(expense.amount)}
+                </div>
+
+
+                <button
+                    type="button"
+                    class="expense-delete"
+                    title="Eliminar gasto"
+                >
+                    🗑
+                </button>
+
+            `;
+
+
+            card.querySelector(".expense-delete")
+                .addEventListener(
+                    "click",
+                    () => {
+
+                        currentEvent.expenses =
+                            currentEvent.expenses.filter(
+                                item =>
+                                    String(item.id) !==
+                                    String(expense.id)
+                            );
+
+
+                        saveEvent();
+
+                        renderExpenses();
+
+                        updateProgress();
+
+                    }
+                );
+
+
+            container.appendChild(card);
+
+        });
+
+
+        document.getElementById("expensesTotal")
+            .textContent =
+            formatMoney(total);
+
+
+        document.getElementById("expensesCount")
+            .textContent =
+            expenses.length;
+
+
+        if (!expenses.length) {
+
+            container.innerHTML = `
+
+                <div class="expense-empty">
+                    Todavía no hay gastos en este evento.
+                </div>
+
+            `;
+
+        }
+
+
+        renderExpenseSplit();
+
+    }
+
+
+    function formatMoney(amount) {
+
+        return Number(amount || 0)
+            .toLocaleString(
+                "es-ES",
+                {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2
+                }
+            ) + " €";
+
+    }
+
+
+    /* =====================================================
+       REPARTO DE GASTOS
+       ===================================================== */
+
+    function renderExpenseSplit() {
+
+        const container =
+            document.getElementById("expenseSplit");
+
+
+        const going =
+            getMembers().filter(
+                (member, index) => {
+
+                    const id =
+                        getMemberId(
+                            member,
+                            index
+                        );
+
+
+                    const participant =
+                        currentEvent.participants.find(
+                            person =>
+                                String(person.id) ===
+                                String(id)
+                        );
+
+
+                    return participant &&
+                           participant.status === "yes";
+
+                }
+            );
+
+
+        const expenses =
+            currentEvent.expenses || [];
+
+
+        if (
+            !going.length ||
+            !expenses.length
+        ) {
+
+            container.innerHTML = "";
+
+            return;
+
+        }
+
+
+        const total =
+            expenses.reduce(
+                (sum, expense) =>
+                    sum +
+                    (Number(expense.amount) || 0),
+                0
+            );
+
+
+        const share =
+            total / going.length;
+
+
+        let html = `
+
+            <div class="expense-split-title">
+                💸 Reparto aproximado entre quienes van
             </div>
 
         `;
 
-        return;
+
+        going.forEach(member => {
+
+            html += `
+
+                <div class="expense-person-row">
+
+                    <span class="expense-person-name">
+                        ${escapeHtml(
+                            getMemberName(member)
+                        )}
+                    </span>
+
+                    <span class="expense-person-share">
+                        ${formatMoney(share)}
+                    </span>
+
+                </div>
+
+            `;
+
+        });
+
+
+        container.innerHTML = html;
+
     }
 
 
-    const members = getMembers();
+    document
+        .getElementById("expenseForm")
+        .addEventListener(
+            "submit",
+            function(event) {
+
+                event.preventDefault();
 
 
-    event.tasks.forEach(task => {
-
-        const card =
-            document.createElement("div");
-
-        card.className =
-            "task-card";
+                const title =
+                    document
+                        .getElementById("expenseTitle")
+                        .value
+                        .trim();
 
 
-        if (task.completed) {
-            card.classList.add(
-                "task-completed"
-            );
-        }
-
-
-        const left =
-            document.createElement("div");
-
-        left.className =
-            "task-left";
-
-
-        const checkbox =
-            document.createElement("input");
-
-        checkbox.type =
-            "checkbox";
-
-        checkbox.className =
-            "task-checkbox";
-
-        checkbox.checked =
-            Boolean(task.completed);
-
-
-        checkbox.addEventListener(
-            "change",
-            () => toggleTask(task.id)
-        );
-
-
-        const content =
-            document.createElement("div");
-
-
-        const title =
-            document.createElement("div");
-
-        title.className =
-            "task-title";
-
-        title.textContent =
-            task.title;
-
-
-        const assignee =
-            document.createElement("div");
-
-        assignee.className =
-            "task-assignee";
-
-
-        let assigneeName =
-            "Sin responsable";
-
-
-        if (task.assignee) {
-
-            const memberIndex =
-                members.findIndex(
-                    (member, index) =>
-                        getMemberId(
-                            member,
-                            index
-                        ) === String(
-                            task.assignee
-                        )
-                );
-
-
-            if (memberIndex !== -1) {
-
-                assigneeName =
-                    getMemberName(
-                        members[memberIndex]
+                const amount =
+                    Number(
+                        document
+                            .getElementById("expenseAmount")
+                            .value
                     );
 
+
+                const payer =
+                    document
+                        .getElementById("expensePayer")
+                        .value;
+
+
+                if (
+                    !title ||
+                    !amount ||
+                    amount <= 0 ||
+                    !payer
+                ) {
+
+                    return;
+
+                }
+
+
+                currentEvent.expenses.push({
+
+                    id: Date.now(),
+
+                    title: title,
+
+                    amount: amount,
+
+                    payer: payer
+
+                });
+
+
+                saveEvent();
+
+
+                document
+                    .getElementById("expenseTitle")
+                    .value = "";
+
+
+                document
+                    .getElementById("expenseAmount")
+                    .value = "";
+
+
+                document
+                    .getElementById("expensePayer")
+                    .value = "";
+
+
+                renderExpenses();
+
             }
+        );
+
+
+    /* =====================================================
+       PROGRESO
+       ===================================================== */
+
+    function updateProgress() {
+
+        const participants =
+            getMembers();
+
+
+        let yes = 0;
+
+
+        participants.forEach(
+            (member, index) => {
+
+                const id =
+                    getMemberId(
+                        member,
+                        index
+                    );
+
+
+                const participant =
+                    currentEvent.participants.find(
+                        person =>
+                            String(person.id) ===
+                            String(id)
+                    );
+
+
+                if (
+                    participant &&
+                    participant.status === "yes"
+                ) {
+
+                    yes++;
+
+                }
+
+            }
+        );
+
+
+        const participantProgress =
+            participants.length
+            ? yes / participants.length
+            : 0;
+
+
+        const tasks =
+            currentEvent.tasks || [];
+
+
+        let taskProgress = 1;
+
+
+        if (tasks.length) {
+
+            const completed =
+                tasks.filter(
+                    task => task.completed
+                ).length;
+
+
+            taskProgress =
+                completed / tasks.length;
 
         }
 
 
-        assignee.textContent =
-            `👤 ${assigneeName}`;
+        const progress =
+            Math.round(
+                (
+                    participantProgress * 0.5 +
+                    taskProgress * 0.5
+                ) * 100
+            );
 
 
-        content.appendChild(title);
-        content.appendChild(assignee);
+        document.getElementById("progressFill")
+            .style.width =
+            progress + "%";
 
 
-        left.appendChild(checkbox);
-        left.appendChild(content);
+        document.getElementById("progressText")
+            .textContent =
+            progress + "%";
+
+    }
 
 
-        const deleteButton =
-            document.createElement("button");
+    /* =====================================================
+       ESTADO
+       ===================================================== */
 
-        deleteButton.type =
-            "button";
+    function updateStatus() {
 
-        deleteButton.className =
-            "delete-task";
-
-        deleteButton.textContent =
-            "🗑️";
-
-        deleteButton.title =
-            "Eliminar tarea";
+        const status =
+            document.getElementById("eventStatus");
 
 
-        deleteButton.addEventListener(
-            "click",
-            () => deleteTask(task.id)
-        );
+        const tasks =
+            currentEvent.tasks || [];
 
-
-        card.appendChild(left);
-        card.appendChild(deleteButton);
-
-
-        container.appendChild(card);
-
-    });
-
-}
-
-
-/* ==========================================
-   COMPLETAR TAREA
-========================================== */
-
-function toggleTask(taskId) {
-
-    const data =
-        getCurrentEventData();
-
-    if (!data.event) return;
-
-
-    const task =
-        data.event.tasks.find(
-            task =>
-                String(task.id) ===
-                String(taskId)
-        );
-
-
-    if (!task) return;
-
-
-    task.completed =
-        !task.completed;
-
-
-    saveCurrentEvent(data.event);
-
-    loadEventPage();
-
-}
-
-
-/* ==========================================
-   ELIMINAR TAREA
-========================================== */
-
-function deleteTask(taskId) {
-
-    const data =
-        getCurrentEventData();
-
-    if (!data.event) return;
-
-
-    data.event.tasks =
-        data.event.tasks.filter(
-            task =>
-                String(task.id) !==
-                String(taskId)
-        );
-
-
-    saveCurrentEvent(data.event);
-
-    loadEventPage();
-
-}
-
-
-/* ==========================================
-   PROGRESO
-========================================== */
-
-function updateProgress(event) {
-
-    const members =
-        getMembers();
-
-
-    const totalParticipants =
-        members.length;
-
-
-    let accepted =
-        0;
-
-
-    members.forEach((member, index) => {
-
-        const id =
-            getMemberId(member, index);
 
         if (
-            event.participants[id] === "yes"
+            tasks.length &&
+            tasks.every(
+                task => task.completed
+            )
         ) {
-            accepted++;
+
+            status.textContent =
+                "🟢 Todo preparado";
+
+            return;
+
         }
 
-    });
+
+        const hasTasks =
+            tasks.length > 0;
 
 
-    const totalTasks =
-        event.tasks.length;
+        if (hasTasks) {
 
+            status.textContent =
+                "🟠 En organización";
 
-    const completedTasks =
-        event.tasks.filter(
-            task => task.completed
-        ).length;
+        } else {
 
+            status.textContent =
+                "🟡 Organización pendiente";
 
-    let participantProgress = 0;
-    let taskProgress = 0;
-
-
-    if (totalParticipants > 0) {
-
-        participantProgress =
-            accepted /
-            totalParticipants;
+        }
 
     }
 
 
-    if (totalTasks > 0) {
+    /* =====================================================
+       INICIO
+       ===================================================== */
 
-        taskProgress =
-            completedTasks /
-            totalTasks;
-
-    }
-
-
-    let progress = 0;
-
-
-    if (
-        totalParticipants === 0 &&
-        totalTasks === 0
-    ) {
-
-        progress = 0;
-
-    } else if (totalTasks === 0) {
-
-        progress =
-            participantProgress * 100;
-
-    } else {
-
-        progress =
-            (
-                participantProgress * 0.5 +
-                taskProgress * 0.5
-            ) * 100;
-
-    }
-
-
-    const fill =
-        document.getElementById(
-            "progressFill"
-        );
-
-    const text =
-        document.getElementById(
-            "progressText"
-        );
-
-
-    if (fill) {
-
-        fill.style.width =
-            `${Math.round(progress)}%`;
-
-    }
-
-
-    if (text) {
-
-        text.textContent =
-            `${Math.round(progress)}% organizado · ${completedTasks}/${totalTasks} tareas completadas`;
-
-    }
-
-}
-
-
-/* ==========================================
-   ESTADO
-========================================== */
-
-function updateStatus(event) {
-
-    const element =
-        document.getElementById(
-            "eventStatus"
-        );
-
-
-    if (!element) return;
-
-
-    const total =
-        event.tasks.length;
-
-
-    const completed =
-        event.tasks.filter(
-            task => task.completed
-        ).length;
-
-
-    if (total === 0) {
-
-        element.textContent =
-            "🟡 Organización pendiente";
-
-        return;
-    }
-
-
-    if (completed === total) {
-
-        element.textContent =
-            "🟢 Todo preparado";
-
-        return;
-    }
-
-
-    element.textContent =
-        "🟠 En organización";
-
-}
-
-
-/* ==========================================
-   ESCAPE DE TEXTO
-========================================== */
-
-function escapeHtml(value) {
-
-    return String(value)
-        .replaceAll("&", "&amp;")
-        .replaceAll("<", "&lt;")
-        .replaceAll(">", "&gt;")
-        .replaceAll('"', "&quot;")
-        .replaceAll("'", "&#039;");
-
-}
-
-
-/* ==========================================
-   INICIAR
-========================================== */
-
-setupTaskForm();
-
-loadEventPage();
+    loadEvent();
 
 </script>
-
-</body>
-
-</html>
