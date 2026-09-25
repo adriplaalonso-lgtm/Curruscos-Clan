@@ -196,13 +196,23 @@ function loadEvents() {
 
             </div>
 
-            <button
-                class="event-delete"
-                onclick="deleteEvent(${event.id})"
-            >
-                Eliminar
-            </button>
+          <div class="event-actions">
 
+    <button
+        class="button button-primary"
+        onclick="window.location.href='evento.html?id=${event.id}'"
+    >
+        Ver evento
+    </button>
+
+    <button
+        class="event-delete"
+        onclick="deleteEvent(${event.id})"
+    >
+        Eliminar
+    </button>
+
+</div>
         </article>
     `).join("");
 }
