@@ -187,6 +187,193 @@ async function getGroupEvent(eventId) {
     return data;
 }
 
+// ========================================
+// PARTICIPANTES
+// ========================================
+
+async function getEventParticipants(eventId) {
+
+    const { data, error } = await supabaseClient
+        .from("event_participants")
+        .select("*")
+        .eq("event_id", eventId);
+
+    if (error) {
+        console.error("Error obteniendo participantes:", error);
+        return [];
+    }
+
+    return data || [];
+}
+
+
+async function setEventParticipant(eventId, userId, status) {
+
+    const { data, error } = await supabaseClient
+        .from("event_participants")
+        .upsert(
+            {
+                event_id: eventId,
+                user_id: userId,
+                status: status
+            },
+            {
+                onConflict: "event_id,user_id"
+            }
+        )
+        .select()
+        .single();
+
+    if (error) {
+        console.error("Error actualizando participante:", error);
+        return null;
+    }
+
+    return data;
+}
+
+
+// ========================================
+// TAREAS
+// ========================================
+
+async function getEventTasks(eventId) {
+
+    const { data, error } = await supabaseClient
+        .from("tasks")
+        .select("*")
+        .eq("event_id", eventId)
+        .order("created_at", { ascending: true });
+
+    if (error) {
+        console.error("Error obteniendo tareas:", error);
+        return [];
+    }
+
+    return data || [];
+}
+
+
+async function createEventTask(eventId, title, assignedTo) {
+
+    const { data, error } = await supabaseClient
+        .from("tasks")
+        .insert({
+            event_id: eventId,
+            title: title,
+            assigned_to: assignedTo || null,
+            completed: false
+        })
+        .select()
+        .single();
+
+    if (error) {
+        console.error("Error creando tarea:", error);
+        return null;
+    }
+
+    return data;
+}
+
+
+async function updateEventTask(taskId, completed) {
+
+    const { data, error } = await supabaseClient
+        .from("tasks")
+        .update({
+            completed: completed
+        })
+        .eq("id", taskId)
+        .select()
+        .single();
+
+    if (error) {
+        console.error("Error actualizando tarea:", error);
+        return null;
+    }
+
+    return data;
+}
+
+
+async function deleteEventTask(taskId) {
+
+    const { error } = await supabaseClient
+        .from("tasks")
+        .delete()
+        .eq("id", taskId);
+
+    if (error) {
+        console.error("Error eliminando tarea:", error);
+        return false;
+    }
+
+    return true;
+}
+
+
+// ========================================
+// GASTOS
+// ========================================
+
+async function getEventExpenses(eventId) {
+
+    const { data, error } = await supabaseClient
+        .from("expenses")
+        .select("*")
+        .eq("event_id", eventId)
+        .order("created_at", { ascending: true });
+
+    if (error) {
+        console.error("Error obteniendo gastos:", error);
+        return [];
+    }
+
+    return data || [];
+}
+
+
+async function createEventExpense(
+    eventId,
+    title,
+    amount,
+    paidBy
+) {
+
+    const { data, error } = await supabaseClient
+        .from("expenses")
+        .insert({
+            event_id: eventId,
+            title: title,
+            amount: amount,
+            paid_by: paidBy
+        })
+        .select()
+        .single();
+
+    if (error) {
+        console.error("Error creando gasto:", error);
+        return null;
+    }
+
+    return data;
+}
+
+
+async function deleteEventExpense(expenseId) {
+
+    const { error } = await supabaseClient
+        .from("expenses")
+        .delete()
+        .eq("id", expenseId);
+
+    if (error) {
+        console.error("Error eliminando gasto:", error);
+        return false;
+    }
+
+    return true;
+}
 
 // ========================================
 // PRUEBA DE CONEXIÓN
