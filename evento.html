@@ -2,231 +2,1466 @@
 <html lang="es">
 
 <head>
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>Evento — Curruscos Clan</title>
 
     <link rel="stylesheet" href="css/style.css">
+
+    <style>
+
+        /* ================================
+           EVENTO
+        ================================= */
+
+        .event-page-card {
+            background: #fff;
+            border-radius: 18px;
+            padding: 25px;
+            margin-bottom: 25px;
+        }
+
+        .event-main-info {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-top: 25px;
+        }
+
+        .event-info-box {
+            padding: 18px;
+            border-radius: 14px;
+            background: #f6f6f6;
+        }
+
+        .event-info-box span {
+            display: block;
+            font-size: 13px;
+            opacity: .6;
+            margin-bottom: 6px;
+        }
+
+        .event-info-box strong {
+            font-size: 17px;
+        }
+
+
+        /* ================================
+           ESTADO DEL EVENTO
+        ================================= */
+
+        .event-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 13px;
+            border-radius: 30px;
+            background: #f2f2f2;
+            font-size: 14px;
+            margin-top: 15px;
+        }
+
+
+        /* ================================
+           PARTICIPANTES
+        ================================= */
+
+        .participants-summary {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .summary-badge {
+            padding: 8px 13px;
+            border-radius: 30px;
+            background: #f3f3f3;
+            font-size: 14px;
+        }
+
+        .participants-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .participant-card {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 15px;
+            padding: 15px;
+            background: #fff;
+            border: 1px solid #e8e8e8;
+            border-radius: 14px;
+        }
+
+        .participant-name {
+            font-weight: 600;
+        }
+
+        .participant-actions {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+
+        .participant-actions button {
+            border: none;
+            border-radius: 8px;
+            padding: 7px 10px;
+            cursor: pointer;
+            background: #eee;
+            font-size: 13px;
+        }
+
+        .participant-actions button.active {
+            background: #111;
+            color: white;
+        }
+
+
+        /* ================================
+           TAREAS
+        ================================= */
+
+        .task-form {
+            display: grid;
+            grid-template-columns: 1.5fr 1fr auto;
+            gap: 10px;
+            margin-bottom: 25px;
+        }
+
+        .task-form input,
+        .task-form select {
+            width: 100%;
+            box-sizing: border-box;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            background: white;
+        }
+
+        .tasks-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .task-card {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 15px;
+            padding: 16px;
+            background: white;
+            border: 1px solid #e8e8e8;
+            border-radius: 14px;
+        }
+
+        .task-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            min-width: 0;
+        }
+
+        .task-checkbox {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+
+        .task-title {
+            font-weight: 600;
+        }
+
+        .task-completed .task-title {
+            text-decoration: line-through;
+            opacity: .5;
+        }
+
+        .task-assignee {
+            font-size: 13px;
+            opacity: .6;
+            margin-top: 3px;
+        }
+
+        .delete-task {
+            border: none;
+            background: transparent;
+            cursor: pointer;
+            opacity: .6;
+            font-size: 16px;
+        }
+
+
+        /* ================================
+           PROGRESO
+        ================================= */
+
+        .progress-container {
+            margin-top: 20px;
+        }
+
+        .progress-bar {
+            height: 9px;
+            background: #e9e9e9;
+            border-radius: 20px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            width: 0%;
+            background: #111;
+            transition: width .25s ease;
+        }
+
+        .progress-text {
+            font-size: 13px;
+            margin-top: 8px;
+            opacity: .65;
+        }
+
+
+        /* ================================
+           RESPONSIVE
+        ================================= */
+
+        @media (max-width: 700px) {
+
+            .event-main-info {
+                grid-template-columns: 1fr;
+            }
+
+            .participant-card,
+            .task-card {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+
+            .participant-actions {
+                width: 100%;
+            }
+
+            .task-form {
+                grid-template-columns: 1fr;
+            }
+
+        }
+
+    </style>
+
 </head>
+
 
 <body>
 
-    <header class="navbar">
 
-        <a href="index.html" class="logo">
-            CURRUSCOS.
+<header class="navbar">
+
+    <a href="index.html" class="logo">
+        CURRUSCOS.
+    </a>
+
+    <nav id="mainNav">
+
+        <a href="index.html">
+            Inicio
         </a>
 
-        <nav id="mainNav">
-            <a href="index.html">Inicio</a>
-            <a href="miembros.html">Miembros</a>
-            <a href="historia.html">Historia</a>
-            <a href="recuerdos.html">Recuerdos</a>
-            <a href="eventos.html" class="active">Eventos</a>
-        </nav>
+        <a href="miembros.html">
+            Miembros
+        </a>
 
-        <button id="menuButton" class="menu-button">
-            ☰
-        </button>
+        <a href="historia.html">
+            Historia
+        </a>
 
-    </header>
+        <a href="recuerdos.html">
+            Recuerdos
+        </a>
 
+        <a href="eventos.html" class="active">
+            Eventos
+        </a>
 
-    <main>
+    </nav>
 
-        <section class="page-hero">
+    <button id="menuButton" class="menu-button">
+        ☰
+    </button>
 
-            <div class="container">
-
-                <span class="eyebrow">
-                    EVENTO
-                </span>
-
-                <h1 id="eventTitle">
-                    Cargando...
-                </h1>
-
-                <p id="eventDescription"></p>
-
-            </div>
-
-        </section>
+</header>
 
 
-        <section class="section">
 
-            <div class="container">
-
-           <div id="eventInfo"></div>
-
-<div class="section-heading" style="margin-top: 50px;">
-    <span class="eyebrow">ORGANIZACIÓN</span>
-    <h2>Participantes</h2>
-    <p>¿Quién viene al evento?</p>
-</div>
-
-<div id="participantsList"></div>
-
-            </div>
-
-        </section>
-
-    </main>
+<main>
 
 
-    <footer class="footer">
+    <!-- ================================
+         CABECERA DEL EVENTO
+    ================================= -->
+
+    <section class="page-hero">
 
         <div class="container">
 
-            <p>
-                CURRUSCOS CLAN © 2026
-            </p>
+            <a
+                href="eventos.html"
+                style="display:inline-block;margin-bottom:20px;"
+            >
+                ← Volver a eventos
+            </a>
+
+            <span class="eyebrow">
+                EVENTO
+            </span>
+
+            <h1 id="eventTitle">
+                Cargando...
+            </h1>
+
+            <p id="eventDescription"></p>
+
+            <div id="eventStatus" class="event-status">
+                ⏳ Cargando estado...
+            </div>
 
         </div>
 
-    </footer>
+    </section>
 
 
-    <script src="js/data.js"></script>
-    <script src="js/app.js"></script>
 
-    <script>
+    <!-- ================================
+         INFORMACIÓN
+    ================================= -->
 
-  function loadEventPage() {
+    <section class="section">
 
-    const params = new URLSearchParams(window.location.search);
-    const eventId = params.get("id");
+        <div class="container">
+
+            <div class="section-heading">
+
+                <span class="eyebrow">
+                    INFORMACIÓN
+                </span>
+
+                <h2>
+                    El plan
+                </h2>
+
+            </div>
+
+
+            <div id="eventInfo"></div>
+
+
+            <div class="event-page-card">
+
+                <h3>
+                    Progreso de organización
+                </h3>
+
+                <div class="progress-container">
+
+                    <div class="progress-bar">
+
+                        <div
+                            id="progressFill"
+                            class="progress-fill"
+                        ></div>
+
+                    </div>
+
+                    <div
+                        id="progressText"
+                        class="progress-text"
+                    >
+                        Calculando...
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+
+    <!-- ================================
+         PARTICIPANTES
+    ================================= -->
+
+    <section class="section">
+
+        <div class="container">
+
+            <div class="section-heading">
+
+                <span class="eyebrow">
+                    ORGANIZACIÓN
+                </span>
+
+                <h2>
+                    Participantes
+                </h2>
+
+                <p>
+                    Gestiona quién viene al evento.
+                </p>
+
+            </div>
+
+
+            <div
+                id="participantsSummary"
+                class="participants-summary"
+            ></div>
+
+
+            <div
+                id="participantsList"
+                class="participants-list"
+            ></div>
+
+        </div>
+
+    </section>
+
+
+
+    <!-- ================================
+         TAREAS
+    ================================= -->
+
+    <section class="section">
+
+        <div class="container">
+
+            <div class="section-heading">
+
+                <span class="eyebrow">
+                    ORGANIZACIÓN
+                </span>
+
+                <h2>
+                    Tareas
+                </h2>
+
+                <p>
+                    Reparte lo que haya que preparar.
+                </p>
+
+            </div>
+
+
+            <div class="event-page-card">
+
+                <form
+                    id="taskForm"
+                    class="task-form"
+                >
+
+                    <input
+                        type="text"
+                        id="taskTitle"
+                        placeholder="Ej. Comprar comida"
+                        required
+                    >
+
+
+                    <select id="taskAssignee">
+
+                        <option value="">
+                            Sin responsable
+                        </option>
+
+                    </select>
+
+
+                    <button
+                        type="submit"
+                        class="button button-primary"
+                    >
+                        Añadir tarea
+                    </button>
+
+                </form>
+
+
+                <div
+                    id="tasksList"
+                    class="tasks-list"
+                ></div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+</main>
+
+
+
+<footer class="footer">
+
+    <div class="container">
+
+        <p>
+            CURRUSCOS CLAN © 2026
+        </p>
+
+    </div>
+
+</footer>
+
+
+
+<script src="js/data.js"></script>
+<script src="js/app.js"></script>
+
+
+<script>
+
+
+/* ==========================================
+   OBTENER EVENTO
+========================================== */
+
+function getCurrentEvent() {
+
+    const params =
+        new URLSearchParams(window.location.search);
+
+    const eventId =
+        params.get("id");
 
     const events =
-        JSON.parse(localStorage.getItem("curruscos_events")) || [];
+        JSON.parse(
+            localStorage.getItem("curruscos_events")
+        ) || [];
 
-    const event = events.find(
-        e => String(e.id) === String(eventId)
+    const event =
+        events.find(
+            e => String(e.id) === String(eventId)
+        );
+
+    return {
+        event,
+        events
+    };
+}
+
+
+
+/* ==========================================
+   OBTENER MIEMBROS
+========================================== */
+
+function getMembers() {
+
+    if (
+        typeof CURRUSCOS_DATA !== "undefined" &&
+        Array.isArray(CURRUSCOS_DATA.members)
+    ) {
+        return CURRUSCOS_DATA.members;
+    }
+
+    return [];
+}
+
+
+
+/* ==========================================
+   NOMBRE DEL MIEMBRO
+========================================== */
+
+function getMemberName(member) {
+
+    return (
+        member.name ||
+        member.nombre ||
+        member.username ||
+        member.nombreCompleto ||
+        "Miembro"
     );
+
+}
+
+
+
+/* ==========================================
+   ID DEL MIEMBRO
+========================================== */
+
+function getMemberId(member, index) {
+
+    return String(
+        member.id ||
+        member._id ||
+        member.name ||
+        member.nombre ||
+        index
+    );
+
+}
+
+
+
+/* ==========================================
+   CARGAR EVENTO
+========================================== */
+
+function loadEventPage() {
+
+    const data =
+        getCurrentEvent();
+
+    const event =
+        data.event;
 
     if (!event) {
 
-        document.getElementById("eventTitle").textContent =
+        document.getElementById(
+            "eventTitle"
+        ).textContent =
             "Evento no encontrado";
 
-        document.getElementById("eventDescription").textContent =
+        document.getElementById(
+            "eventDescription"
+        ).textContent =
             "Este evento no existe o ha sido eliminado.";
 
         return;
     }
 
-    document.getElementById("eventTitle").textContent =
+
+    /* Inicializar estructura */
+
+    if (!event.participants) {
+
+        event.participants = {};
+
+    }
+
+    if (!Array.isArray(event.tasks)) {
+
+        event.tasks = [];
+
+    }
+
+
+    /* Información principal */
+
+    document.getElementById(
+        "eventTitle"
+    ).textContent =
         event.title;
 
-    document.getElementById("eventDescription").textContent =
+
+    document.getElementById(
+        "eventDescription"
+    ).textContent =
         event.description || "";
 
-    document.getElementById("eventInfo").innerHTML = `
 
-        <div class="event-card">
+    document.getElementById(
+        "eventInfo"
+    ).innerHTML = `
 
-            <p>
-                📅 <strong>Fecha:</strong>
-                ${event.date || "Sin fecha"}
-            </p>
+        <div class="event-main-info">
 
-            <p>
-                🕐 <strong>Hora:</strong>
-                ${event.time || "Sin hora"}
-            </p>
+            <div class="event-info-box">
 
-            <p>
-                📍 <strong>Lugar:</strong>
-                ${event.location || "Sin lugar"}
-            </p>
+                <span>
+                    FECHA
+                </span>
+
+                <strong>
+                    📅 ${event.date || "Sin fecha"}
+                </strong>
+
+            </div>
+
+
+            <div class="event-info-box">
+
+                <span>
+                    HORA
+                </span>
+
+                <strong>
+                    🕐 ${event.time || "Sin hora"}
+                </strong>
+
+            </div>
+
+
+            <div class="event-info-box">
+
+                <span>
+                    LUGAR
+                </span>
+
+                <strong>
+                    📍 ${event.location || "Sin lugar"}
+                </strong>
+
+            </div>
 
         </div>
 
     `;
 
 
-    /* PARTICIPANTES */
+    saveEventChanges();
 
-    const members = CURRUSCOS_DATA.members || [];
+    renderParticipants(event);
 
-    if (!event.participants) {
-        event.participants = {};
+    renderTasks(event);
+
+    updateTaskAssignees();
+
+    updateEventProgress(event);
+
+    updateEventStatus(event);
+
+}
+
+
+
+/* ==========================================
+   GUARDAR CAMBIOS
+========================================== */
+
+function saveEventChanges() {
+
+    const data =
+        getCurrentEvent();
+
+    if (!data.event) return;
+
+    const index =
+        data.events.findIndex(
+            e => String(e.id) === String(data.event.id)
+        );
+
+    if (index === -1) return;
+
+    data.events[index] =
+        data.event;
+
+    localStorage.setItem(
+        "curruscos_events",
+        JSON.stringify(data.events)
+    );
+
+}
+
+
+
+/* ==========================================
+   PARTICIPANTES
+========================================== */
+
+function renderParticipants(event) {
+
+    const members =
+        getMembers();
+
+    const container =
+        document.getElementById(
+            "participantsList"
+        );
+
+
+    const summary =
+        document.getElementById(
+            "participantsSummary"
+        );
+
+
+    if (!members.length) {
+
+        container.innerHTML = `
+            <div class="event-page-card">
+                No se han encontrado miembros.
+            </div>
+        `;
+
+        return;
     }
 
-    const participantsContainer =
-        document.getElementById("participantsList");
 
-    participantsContainer.innerHTML = members.map(member => {
+    let yes = 0;
+    let no = 0;
+    let pending = 0;
 
-        const memberId = member.id;
-        const status = event.participants[memberId] || "pending";
 
-        return `
+    container.innerHTML =
+        members.map(
+            (member, index) => {
 
-            <div class="event-card participant-card">
+                const id =
+                    getMemberId(
+                        member,
+                        index
+                    );
 
-                <div>
-                    <strong>${member.name}</strong>
-                </div>
+                const name =
+                    getMemberName(
+                        member
+                    );
 
-                <div>
 
-                    <button
-                        onclick="setParticipantStatus(${event.id}, '${memberId}', 'yes')"
-                    >
-                        ${status === "yes" ? "✅ Va" : "Va"}
-                    </button>
+                const status =
+                    event.participants[id] ||
+                    "pending";
 
-                    <button
-                        onclick="setParticipantStatus(${event.id}, '${memberId}', 'no')"
-                    >
-                        ${status === "no" ? "❌ No va" : "No va"}
-                    </button>
 
-                    <button
-                        onclick="setParticipantStatus(${event.id}, '${memberId}', 'pending')"
-                    >
-                        ${status === "pending" ? "❓ Sin responder" : "Pendiente"}
-                    </button>
+                if (status === "yes") yes++;
+                else if (status === "no") no++;
+                else pending++;
 
-                </div>
+
+                return `
+
+                    <div class="participant-card">
+
+                        <div class="participant-name">
+
+                            ${name}
+
+                        </div>
+
+
+                        <div class="participant-actions">
+
+                            <button
+                                class="${status === "yes" ? "active" : ""}"
+                                onclick="setParticipantStatus('${id}', 'yes')"
+                            >
+                                ✅ Va
+                            </button>
+
+
+                            <button
+                                class="${status === "no" ? "active" : ""}"
+                                onclick="setParticipantStatus('${id}', 'no')"
+                            >
+                                ❌ No va
+                            </button>
+
+
+                            <button
+                                class="${status === "pending" ? "active" : ""}"
+                                onclick="setParticipantStatus('${id}', 'pending')"
+                            >
+                                ❓ Pendiente
+                            </button>
+
+                        </div>
+
+                    </div>
+
+                `;
+
+            }
+        ).join("");
+
+
+    summary.innerHTML = `
+
+        <div class="summary-badge">
+            🟢 ${yes} van
+        </div>
+
+        <div class="summary-badge">
+            🔴 ${no} no van
+        </div>
+
+        <div class="summary-badge">
+            🟡 ${pending} pendientes
+        </div>
+
+    `;
+
+}
+
+
+
+/* ==========================================
+   CAMBIAR PARTICIPANTE
+========================================== */
+
+function setParticipantStatus(
+    memberId,
+    status
+) {
+
+    const data =
+        getCurrentEvent();
+
+    if (!data.event) return;
+
+
+    if (!data.event.participants) {
+
+        data.event.participants = {};
+
+    }
+
+
+    data.event.participants[
+        memberId
+    ] = status;
+
+
+    saveEventChanges();
+
+
+    loadEventPage();
+
+}
+
+
+
+/* ==========================================
+   SELECT DE RESPONSABLES
+========================================== */
+
+function updateTaskAssignees() {
+
+    const select =
+        document.getElementById(
+            "taskAssignee"
+        );
+
+    if (!select) return;
+
+
+    const members =
+        getMembers();
+
+
+    select.innerHTML = `
+        <option value="">
+            Sin responsable
+        </option>
+    `;
+
+
+    members.forEach(
+        (member, index) => {
+
+            const id =
+                getMemberId(
+                    member,
+                    index
+                );
+
+            const name =
+                getMemberName(
+                    member
+                );
+
+
+            const option =
+                document.createElement(
+                    "option"
+                );
+
+
+            option.value =
+                id;
+
+            option.textContent =
+                name;
+
+
+            select.appendChild(
+                option
+            );
+
+        }
+    );
+
+}
+
+
+
+/* ==========================================
+   CREAR TAREA
+========================================== */
+
+document
+    .getElementById("taskForm")
+    .addEventListener(
+        "submit",
+        function(event) {
+
+            event.preventDefault();
+
+
+            const title =
+                document.getElementById(
+                    "taskTitle"
+                ).value.trim();
+
+
+            const assignee =
+                document.getElementById(
+                    "taskAssignee"
+                ).value;
+
+
+            if (!title) return;
+
+
+            const data =
+                getCurrentEvent();
+
+
+            if (!data.event) return;
+
+
+            if (!Array.isArray(data.event.tasks)) {
+
+                data.event.tasks = [];
+
+            }
+
+
+            data.event.tasks.push({
+
+                id:
+                    Date.now(),
+
+                title:
+                    title,
+
+                assignee:
+                    assignee,
+
+                completed:
+                    false
+
+            });
+
+
+            saveEventChanges();
+
+
+            document
+                .getElementById("taskForm")
+                .reset();
+
+
+            loadEventPage();
+
+        }
+    );
+
+
+
+/* ==========================================
+   MOSTRAR TAREAS
+========================================== */
+
+function renderTasks(event) {
+
+    const container =
+        document.getElementById(
+            "tasksList"
+        );
+
+
+    if (!event.tasks.length) {
+
+        container.innerHTML = `
+
+            <div class="event-page-card">
+
+                <p>
+                    Todavía no hay tareas.
+                </p>
 
             </div>
 
         `;
 
-    }).join("");
-
-}
-        function setParticipantStatus(eventId, memberId, status) {
-
-    const events =
-        JSON.parse(localStorage.getItem("curruscos_events")) || [];
-
-    const event = events.find(
-        e => String(e.id) === String(eventId)
-    );
-
-    if (!event) return;
-
-    if (!event.participants) {
-        event.participants = {};
+        return;
     }
 
-    event.participants[memberId] = status;
 
-    localStorage.setItem(
-        "curruscos_events",
-        JSON.stringify(events)
-    );
+    const members =
+        getMembers();
 
-    loadEventPage();
+
+    container.innerHTML =
+        event.tasks.map(
+            task => {
+
+                let assigneeName =
+                    "Sin responsable";
+
+
+                if (task.assignee) {
+
+                    const member =
+                        members.find(
+                            (m, index) =>
+                                getMemberId(
+                                    m,
+                                    index
+                                ) === String(
+                                    task.assignee
+                                )
+                        );
+
+
+                    if (member) {
+
+                        assigneeName =
+                            getMemberName(
+                                member
+                            );
+
+                    }
+
+                }
+
+
+                return `
+
+                    <div
+                        class="task-card
+                        ${task.completed ? "task-completed" : ""}"
+                    >
+
+                        <div class="task-left">
+
+                            <input
+                                type="checkbox"
+                                class="task-checkbox"
+                                ${task.completed ? "checked" : ""}
+                                onchange="toggleTask(${task.id})"
+                            >
+
+
+                            <div>
+
+                                <div class="task-title">
+
+                                    ${escapeHtml(
+                                        task.title
+                                    )}
+
+                                </div>
+
+
+                                <div class="task-assignee">
+
+                                    👤 ${escapeHtml(
+                                        assigneeName
+                                    )}
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        <button
+                            class="delete-task"
+                            onclick="deleteTask(${task.id})"
+                            title="Eliminar tarea"
+                        >
+                            🗑️
+                        </button>
+
+                    </div>
+
+                `;
+
+            }
+        ).join("");
+
 }
 
-        loadEventPage();
 
-    </script>
+
+/* ==========================================
+   COMPLETAR TAREA
+========================================== */
+
+function toggleTask(taskId) {
+
+    const data =
+        getCurrentEvent();
+
+    if (!data.event) return;
+
+
+    const task =
+        data.event.tasks.find(
+            t => String(t.id) === String(taskId)
+        );
+
+
+    if (!task) return;
+
+
+    task.completed =
+        !task.completed;
+
+
+    saveEventChanges();
+
+
+    loadEventPage();
+
+}
+
+
+
+/* ==========================================
+   ELIMINAR TAREA
+========================================== */
+
+function deleteTask(taskId) {
+
+    const data =
+        getCurrentEvent();
+
+    if (!data.event) return;
+
+
+    data.event.tasks =
+        data.event.tasks.filter(
+            task =>
+                String(task.id) !== String(taskId)
+        );
+
+
+    saveEventChanges();
+
+
+    loadEventPage();
+
+}
+
+
+
+/* ==========================================
+   PROGRESO
+========================================== */
+
+function updateEventProgress(event) {
+
+    const totalTasks =
+        event.tasks.length;
+
+
+    const completedTasks =
+        event.tasks.filter(
+            task => task.completed
+        ).length;
+
+
+    const participants =
+        getMembers();
+
+
+    let accepted =
+        0;
+
+
+    participants.forEach(
+        (member, index) => {
+
+            const id =
+                getMemberId(
+                    member,
+                    index
+                );
+
+
+            if (
+                event.participants[id] === "yes"
+            ) {
+
+                accepted++;
+
+            }
+
+        }
+    );
+
+
+    let taskProgress = 0;
+
+
+    if (totalTasks > 0) {
+
+        taskProgress =
+            completedTasks /
+            totalTasks;
+
+    }
+
+
+    let participantProgress = 0;
+
+
+    if (participants.length > 0) {
+
+        participantProgress =
+            accepted /
+            participants.length;
+
+    }
+
+
+    let progress;
+
+
+    if (
+        totalTasks === 0 &&
+        participants.length === 0
+    ) {
+
+        progress = 0;
+
+    } else if (totalTasks === 0) {
+
+        progress =
+            participantProgress * 100;
+
+    } else {
+
+        progress =
+            (
+                taskProgress * 0.5 +
+                participantProgress * 0.5
+            ) * 100;
+
+    }
+
+
+    const fill =
+        document.getElementById(
+            "progressFill"
+        );
+
+
+    const text =
+        document.getElementById(
+            "progressText"
+        );
+
+
+    fill.style.width =
+        `${Math.round(progress)}%`;
+
+
+    text.textContent =
+        `${Math.round(progress)}% organizado · ${completedTasks}/${totalTasks} tareas completadas`;
+
+}
+
+
+
+/* ==========================================
+   ESTADO DEL EVENTO
+========================================== */
+
+function updateEventStatus(event) {
+
+    const element =
+        document.getElementById(
+            "eventStatus"
+        );
+
+
+    const totalTasks =
+        event.tasks.length;
+
+
+    const completedTasks =
+        event.tasks.filter(
+            task => task.completed
+        ).length;
+
+
+    if (
+        totalTasks === 0
+    ) {
+
+        element.textContent =
+            "🟡 Organización pendiente";
+
+        return;
+
+    }
+
+
+    if (
+        completedTasks === totalTasks
+    ) {
+
+        element.textContent =
+            "🟢 Todo preparado";
+
+        return;
+
+    }
+
+
+    element.textContent =
+        "🟠 En organización";
+
+}
+
+
+
+/* ==========================================
+   SEGURIDAD BÁSICA PARA TEXTO
+========================================== */
+
+function escapeHtml(value) {
+
+    return String(value)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+
+}
+
+
+
+/* ==========================================
+   INICIAR
+========================================== */
+
+loadEventPage();
+
+
+</script>
+
 
 </body>
 
