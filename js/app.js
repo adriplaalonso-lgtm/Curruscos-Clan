@@ -207,68 +207,41 @@ function loadEvents() {
     `).join("");
 }
 
-
 function setupEventForm() {
-
     const form = document.getElementById("eventForm");
 
     if (!form) return;
 
-    form.addEventListener("submit", (event) => {
-
+    form.addEventListener("submit", function (event) {
         event.preventDefault();
 
-        const title =
-            document.getElementById("eventTitle").value;
-
-        const date =
-            document.getElementById("eventDate").value;
-
-        const time =
-            document.getElementById("eventTime").value;
-
-        const location =
-            document.getElementById("eventLocation").value;
-
-        const description =
-            document.getElementById("eventDescription").value;
-
-
-        const events = JSON.parse(
-            localStorage.getItem("curruscos_events")
-        ) || [...CURRUSCOS_DATA.events];
-
-
         const newEvent = {
-
             id: Date.now(),
-
-            title: title,
-
-            date: date,
-
-            time: time,
-
-            location: location,
-
-            description: description
-
+            title: document.getElementById("eventTitle").value,
+            date: document.getElementById("eventDate").value,
+            time: document.getElementById("eventTime").value,
+            location: document.getElementById("eventLocation").value,
+            description: document.getElementById("eventDescription").value
         };
 
+        let events = JSON.parse(
+            localStorage.getItem("curruscos_events")
+        );
+
+        if (!events) {
+            events = [...CURRUSCOS_DATA.events];
+        }
 
         events.push(newEvent);
-
 
         localStorage.setItem(
             "curruscos_events",
             JSON.stringify(events)
         );
 
-
         form.reset();
 
         loadEvents();
-
     });
 }
 
