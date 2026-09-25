@@ -196,14 +196,14 @@ function loadEvents() {
 
             </div>
 
-          <div class="event-actions">
+        <div class="event-actions">
 
-    <button
+    <a
+        href="evento.html?id=${event.id}"
         class="button button-primary"
-        onclick="window.location.href='evento.html?id=${event.id}'"
     >
-        Ver evento
-    </button>
+        Ver detalles
+    </a>
 
     <button
         class="event-delete"
