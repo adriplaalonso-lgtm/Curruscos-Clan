@@ -285,3 +285,15 @@ async function deleteEvent(id) {
 
     await loadEvents();
 }
+function formatEventDay(date) {
+    const d = new Date(date);
+    return d.getDate();
+}
+
+function formatEventMonth(date) {
+    const d = new Date(date);
+
+    return d.toLocaleDateString("es-ES", {
+        month: "short"
+    }).toUpperCase();
+}
