@@ -153,22 +153,29 @@ function setupMobileMenu() {
         nav.classList.toggle("mobile-open");
     });
 }
-function loadEvents() {
+async function loadEvents() {
+
     const container = document.getElementById("eventsList");
 
     if (!container) return;
 
-    let events = JSON.parse(
-        localStorage.getItem("curruscos_events")
-    ) || CURRUSCOS_DATA.events;
+    container.innerHTML = `
+        <div class="empty-state">
+            <h3>Cargando eventos...</h3>
+        </div>
+    `;
+
+    const events = await getGroupEvents();
 
     if (events.length === 0) {
+
         container.innerHTML = `
             <div class="empty-state">
                 <h3>No hay eventos todavía</h3>
                 <p>Creemos el primero.</p>
             </div>
         `;
+
         return;
     }
 
@@ -187,7 +194,7 @@ function loadEvents() {
                 <p class="event-details">
                     🕐 ${event.time || "Hora por confirmar"}
                     &nbsp; · &nbsp;
-                    📍 ${event.location}
+                    📍 ${event.location || "Lugar por confirmar"}
                 </p>
 
                 <p>
@@ -196,101 +203,85 @@ function loadEvents() {
 
             </div>
 
-        <div class="event-actions">
+            <div class="event-actions">
 
-    <a
-        href="evento.html?id=${event.id}"
-        class="button button-primary"
-    >
-        Ver detalles
-    </a>
+                <a
+                    href="evento.html?id=${event.id}"
+                    class="button button-primary"
+                >
+                    Ver detalles
+                </a>
 
-    <button
-        class="event-delete"
-        onclick="deleteEvent(${event.id})"
-    >
-        Eliminar
-    </button>
+                <button
+                    class="event-delete"
+                    onclick="deleteEvent('${event.id}')"
+                >
+                    Eliminar
+                </button>
 
-</div>
+            </div>
+
         </article>
     `).join("");
 }
 
+
 function setupEventForm() {
+
     const form = document.getElementById("eventForm");
 
     if (!form) return;
 
-    form.addEventListener("submit", function (event) {
+    form.addEventListener("submit", async function (event) {
+
         event.preventDefault();
 
         const newEvent = {
-            id: Date.now(),
-            title: document.getElementById("eventTitle").value,
+
+            title: document.getElementById("eventTitle").value.trim(),
+
             date: document.getElementById("eventDate").value,
+
             time: document.getElementById("eventTime").value,
-            location: document.getElementById("eventLocation").value,
-            description: document.getElementById("eventDescription").value
+
+            location: document.getElementById("eventLocation").value.trim(),
+
+            description: document.getElementById("eventDescription").value.trim()
+
         };
 
-        let events = JSON.parse(
-            localStorage.getItem("curruscos_events")
-        );
+        const createdEvent = await createGroupEvent(newEvent);
 
-        if (!events) {
-            events = [...CURRUSCOS_DATA.events];
+        if (!createdEvent) {
+
+            alert("No se ha podido crear el evento.");
+
+            return;
         }
-
-        events.push(newEvent);
-
-        localStorage.setItem(
-            "curruscos_events",
-            JSON.stringify(events)
-        );
 
         form.reset();
 
-        loadEvents();
+        await loadEvents();
     });
 }
 
 
-function deleteEvent(id) {
+async function deleteEvent(id) {
 
-    let events = JSON.parse(
-        localStorage.getItem("curruscos_events")
-    ) || [...CURRUSCOS_DATA.events];
-
-
-    events = events.filter(event => event.id !== id);
-
-
-    localStorage.setItem(
-        "curruscos_events",
-        JSON.stringify(events)
+    const confirmed = confirm(
+        "¿Seguro que quieres eliminar este evento?"
     );
 
+    if (!confirmed) return;
 
-    loadEvents();
-}
+    const success = await deleteGroupEvent(id);
 
+    if (!success) {
 
-function formatEventDay(dateString) {
+        alert("No se ha podido eliminar el evento.");
 
-    const date = new Date(dateString);
+        return;
+    }
 
-    return date.getDate();
-
-}
-
-
-function formatEventMonth(dateString) {
-
-    const date = new Date(dateString);
-
-    return date.toLocaleDateString("es-ES", {
-        month: "short"
-    }).replace(".", "");
-
+    await loadEvents();
 }
