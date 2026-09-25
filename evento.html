@@ -1683,17 +1683,50 @@
     document.getElementById("eventLocation").textContent =
         currentEvent.location || "Sin lugar";
 
-    renderParticipants();
+   renderParticipants();
 
-    renderTaskAssignees();
+renderTaskAssignees();
+
+await loadSupabaseTasks();
+
+await loadSupabaseExpenses();
+
+updateProgress();
+
+updateStatus();
+}
+
+    async function loadSupabaseTasks() {
+
+    if (!currentEvent) return;
+
+    const tasks = await getEventTasks(currentEvent.id);
+
+    currentEvent.tasks = tasks.map(task => ({
+        id: task.id,
+        title: task.title,
+        assignee: task.assigned_to,
+        completed: task.completed
+    }));
 
     renderTasks();
+}
+
+
+async function loadSupabaseExpenses() {
+
+    if (!currentEvent) return;
+
+    const expenses = await getEventExpenses(currentEvent.id);
+
+    currentEvent.expenses = expenses.map(expense => ({
+        id: expense.id,
+        title: expense.title,
+        amount: Number(expense.amount),
+        payer: expense.paid_by
+    }));
 
     renderExpenses();
-
-    updateProgress();
-
-    updateStatus();
 }
 
     /* =====================================================
