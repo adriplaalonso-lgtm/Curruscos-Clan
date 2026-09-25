@@ -740,218 +740,365 @@
 
 <main>
 
+    <section class="event-page">
 
-    <!-- ================================
-         CABECERA DEL EVENTO
-    ================================= -->
+        <!-- VOLVER -->
 
-    <section class="page-hero">
-
-        <div class="container">
-
-            <a
-                href="eventos.html"
-                style="display:inline-block;margin-bottom:20px;"
-            >
-                ← Volver a eventos
-            </a>
-
-            <span class="eyebrow">
-                EVENTO
-            </span>
-
-            <h1 id="eventTitle">
-                Cargando...
-            </h1>
-
-            <p id="eventDescription"></p>
-
-            <div id="eventStatus" class="event-status">
-                ⏳ Cargando estado...
-            </div>
-
-        </div>
-
-    </section>
+        <a href="eventos.html" class="event-back">
+            ← Volver a eventos
+        </a>
 
 
+        <!-- ================================
+             CABECERA DEL EVENTO
+             ================================ -->
 
-    <!-- ================================
-         INFORMACIÓN
-    ================================= -->
+        <div class="event-page-card">
 
-    <section class="section">
+            <div class="event-hero">
 
-        <div class="container">
+                <div class="event-hero-content">
 
-            <div class="section-heading">
+                    <div class="event-label">
+                        📅 EVENTO
+                    </div>
 
-                <span class="eyebrow">
-                    INFORMACIÓN
-                </span>
+                    <h1
+                        id="eventTitle"
+                        class="event-title"
+                    >
+                        Cargando evento...
+                    </h1>
 
-                <h2>
-                    El plan
-                </h2>
+                    <p
+                        id="eventDescription"
+                        class="event-description"
+                    ></p>
+
+                </div>
 
             </div>
 
 
-            <div id="eventInfo"></div>
+            <!-- ================================
+                 INFORMACIÓN
+                 ================================ -->
 
+            <div class="event-main-info">
 
-            <div class="event-page-card">
+                <div class="event-info-box">
 
-                <h3>
-                    Progreso de organización
-                </h3>
+                    <div class="event-info-icon">
+                        📅
+                    </div>
 
-                <div class="progress-container">
+                    <div class="event-info-text">
 
-                    <div class="progress-bar">
+                        <span class="event-info-label">
+                            Fecha
+                        </span>
 
-                        <div
-                            id="progressFill"
-                            class="progress-fill"
-                        ></div>
+                        <span
+                            id="eventDate"
+                            class="event-info-value"
+                        >
+                            —
+                        </span>
 
                     </div>
 
-                    <div
-                        id="progressText"
-                        class="progress-text"
-                    >
-                        Calculando...
+                </div>
+
+
+                <div class="event-info-box">
+
+                    <div class="event-info-icon">
+                        🕐
+                    </div>
+
+                    <div class="event-info-text">
+
+                        <span class="event-info-label">
+                            Hora
+                        </span>
+
+                        <span
+                            id="eventTime"
+                            class="event-info-value"
+                        >
+                            —
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+                <div class="event-info-box">
+
+                    <div class="event-info-icon">
+                        📍
+                    </div>
+
+                    <div class="event-info-text">
+
+                        <span class="event-info-label">
+                            Lugar
+                        </span>
+
+                        <span
+                            id="eventLocation"
+                            class="event-info-value"
+                        >
+                            —
+                        </span>
+
                     </div>
 
                 </div>
 
             </div>
 
-        </div>
 
-    </section>
+            <!-- ================================
+                 CONTENIDO
+                 ================================ -->
 
-
-
-    <!-- ================================
-         PARTICIPANTES
-    ================================= -->
-
-    <section class="section">
-
-        <div class="container">
-
-            <div class="section-heading">
-
-                <span class="eyebrow">
-                    ORGANIZACIÓN
-                </span>
-
-                <h2>
-                    Participantes
-                </h2>
-
-                <p>
-                    Gestiona quién viene al evento.
-                </p>
-
-            </div>
+            <div class="event-content">
 
 
-            <div
-                id="participantsSummary"
-                class="participants-summary"
-            ></div>
+                <!-- ORGANIZACIÓN -->
+
+                <section class="event-section">
+
+                    <div class="event-section-header">
+
+                        <h2 class="event-section-title">
+
+                            <span class="event-section-title-icon">
+                                📋
+                            </span>
+
+                            Organización
+
+                        </h2>
 
 
-            <div
-                id="participantsList"
-                class="participants-list"
-            ></div>
+                        <div
+                            id="eventStatus"
+                            class="event-status"
+                        >
+                            🟡 Organización pendiente
+                        </div>
 
-        </div>
-
-    </section>
-
-
-
-    <!-- ================================
-         TAREAS
-    ================================= -->
-
-    <section class="section">
-
-        <div class="container">
-
-            <div class="section-heading">
-
-                <span class="eyebrow">
-                    ORGANIZACIÓN
-                </span>
-
-                <h2>
-                    Tareas
-                </h2>
-
-                <p>
-                    Reparte lo que haya que preparar.
-                </p>
-
-            </div>
+                    </div>
 
 
-            <div class="event-page-card">
+                    <!-- PROGRESO -->
 
-                <form
-                    id="taskForm"
-                    class="task-form"
-                >
+                    <div class="progress-container">
 
-                    <input
-                        type="text"
-                        id="taskTitle"
-                        placeholder="Ej. Comprar comida"
-                        required
+                        <div class="progress-header">
+
+                            <span class="progress-label">
+                                Progreso del evento
+                            </span>
+
+                            <span
+                                id="progressText"
+                                class="progress-text"
+                            >
+                                0%
+                            </span>
+
+                        </div>
+
+
+                        <div class="progress-bar">
+
+                            <div
+                                id="progressFill"
+                                class="progress-fill"
+                                style="width: 0%;"
+                            ></div>
+
+                        </div>
+
+                    </div>
+
+                </section>
+
+
+                <div class="event-divider"></div>
+
+
+                <!-- ================================
+                     PARTICIPANTES
+                     ================================ -->
+
+                <section class="event-section">
+
+                    <div class="event-section-header">
+
+                        <h2 class="event-section-title">
+
+                            <span class="event-section-title-icon">
+                                👥
+                            </span>
+
+                            Participantes
+
+                        </h2>
+
+                    </div>
+
+
+                    <!-- RESUMEN -->
+
+                    <div class="participants-summary">
+
+                        <div class="summary-badge">
+
+                            <span
+                                id="participantsYes"
+                                class="summary-number"
+                            >
+                                0
+                            </span>
+
+                            <span class="summary-label">
+                                ✅ Van
+                            </span>
+
+                        </div>
+
+
+                        <div class="summary-badge">
+
+                            <span
+                                id="participantsPending"
+                                class="summary-number"
+                            >
+                                0
+                            </span>
+
+                            <span class="summary-label">
+                                ❓ Pendientes
+                            </span>
+
+                        </div>
+
+
+                        <div class="summary-badge">
+
+                            <span
+                                id="participantsNo"
+                                class="summary-number"
+                            >
+                                0
+                            </span>
+
+                            <span class="summary-label">
+                                ❌ No van
+                            </span>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- PERSONAS -->
+
+                    <div
+                        id="participantsList"
+                        class="participants-list"
+                    ></div>
+
+                </section>
+
+
+                <div class="event-divider"></div>
+
+
+                <!-- ================================
+                     TAREAS
+                     ================================ -->
+
+                <section class="event-section">
+
+                    <div class="event-section-header">
+
+                        <h2 class="event-section-title">
+
+                            <span class="event-section-title-icon">
+                                ✓
+                            </span>
+
+                            Tareas
+
+                        </h2>
+
+                    </div>
+
+
+                    <!-- FORMULARIO -->
+
+                    <form
+                        id="taskForm"
+                        class="task-form"
                     >
 
-
-                    <select id="taskAssignee">
-
-                        <option value="">
-                            Sin responsable
-                        </option>
-
-                    </select>
-
-
-                    <button
-                        type="submit"
-                        class="button button-primary"
-                    >
-                        Añadir tarea
-                    </button>
-
-                </form>
+                        <input
+                            type="text"
+                            id="taskTitle"
+                            placeholder="¿Qué hay que hacer?"
+                            maxlength="100"
+                            autocomplete="off"
+                            required
+                        >
 
 
-                <div
-                    id="tasksList"
-                    class="tasks-list"
-                ></div>
+                        <select id="taskAssignee">
+
+                            <option value="">
+                                Sin responsable
+                            </option>
+
+                        </select>
+
+
+                        <button type="submit">
+                            + Añadir tarea
+                        </button>
+
+                    </form>
+
+
+                    <!-- TAREAS -->
+
+                    <div
+                        id="tasksList"
+                        class="tasks-list"
+                    ></div>
+
+                </section>
+
 
             </div>
 
         </div>
 
     </section>
-
 
 </main>
 
 
-
 <footer class="footer">
+
+    <script src="js/data.js"></script>
+<script src="js/app.js"></script>
+
+<script>
 
     <div class="container">
 
