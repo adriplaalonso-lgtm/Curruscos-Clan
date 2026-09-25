@@ -1,3 +1,4 @@
+console.log("SUPABASE.JS SE HA CARGADO");
 const SUPABASE_URL = "https://prltjzwguleuaexpcbvi.supabase.co";
 
 const SUPABASE_ANON_KEY = "sb_publishable_VRAhrIDUBjoHwqejdo4clA_2KHiGZDf";
