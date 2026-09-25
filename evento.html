@@ -93,58 +93,136 @@
 
     <script>
 
-        function loadEventPage() {
+  function loadEventPage() {
 
-            const params = new URLSearchParams(window.location.search);
-            const eventId = params.get("id");
+    const params = new URLSearchParams(window.location.search);
+    const eventId = params.get("id");
 
-            const events =
-                JSON.parse(localStorage.getItem("curruscos_events")) || [];
+    const events =
+        JSON.parse(localStorage.getItem("curruscos_events")) || [];
 
-            const event = events.find(
-                e => String(e.id) === String(eventId)
-            );
+    const event = events.find(
+        e => String(e.id) === String(eventId)
+    );
 
-            if (!event) {
+    if (!event) {
 
-                document.getElementById("eventTitle").textContent =
-                    "Evento no encontrado";
+        document.getElementById("eventTitle").textContent =
+            "Evento no encontrado";
 
-                document.getElementById("eventDescription").textContent =
-                    "Este evento no existe o ha sido eliminado.";
+        document.getElementById("eventDescription").textContent =
+            "Este evento no existe o ha sido eliminado.";
 
-                return;
-            }
+        return;
+    }
 
-            document.getElementById("eventTitle").textContent =
-                event.title;
+    document.getElementById("eventTitle").textContent =
+        event.title;
 
-            document.getElementById("eventDescription").textContent =
-                event.description || "";
+    document.getElementById("eventDescription").textContent =
+        event.description || "";
 
-            document.getElementById("eventInfo").innerHTML = `
+    document.getElementById("eventInfo").innerHTML = `
 
-                <div class="event-card">
+        <div class="event-card">
 
-                    <p>
-                        📅 <strong>Fecha:</strong>
-                        ${event.date || "Sin fecha"}
-                    </p>
+            <p>
+                📅 <strong>Fecha:</strong>
+                ${event.date || "Sin fecha"}
+            </p>
 
-                    <p>
-                        🕐 <strong>Hora:</strong>
-                        ${event.time || "Sin hora"}
-                    </p>
+            <p>
+                🕐 <strong>Hora:</strong>
+                ${event.time || "Sin hora"}
+            </p>
 
-                    <p>
-                        📍 <strong>Lugar:</strong>
-                        ${event.location || "Sin lugar"}
-                    </p>
+            <p>
+                📍 <strong>Lugar:</strong>
+                ${event.location || "Sin lugar"}
+            </p>
+
+        </div>
+
+    `;
+
+
+    /* PARTICIPANTES */
+
+    const members = CURRUSCOS_DATA.members || [];
+
+    if (!event.participants) {
+        event.participants = {};
+    }
+
+    const participantsContainer =
+        document.getElementById("participantsList");
+
+    participantsContainer.innerHTML = members.map(member => {
+
+        const memberId = member.id;
+        const status = event.participants[memberId] || "pending";
+
+        return `
+
+            <div class="event-card participant-card">
+
+                <div>
+                    <strong>${member.name}</strong>
+                </div>
+
+                <div>
+
+                    <button
+                        onclick="setParticipantStatus(${event.id}, '${memberId}', 'yes')"
+                    >
+                        ${status === "yes" ? "✅ Va" : "Va"}
+                    </button>
+
+                    <button
+                        onclick="setParticipantStatus(${event.id}, '${memberId}', 'no')"
+                    >
+                        ${status === "no" ? "❌ No va" : "No va"}
+                    </button>
+
+                    <button
+                        onclick="setParticipantStatus(${event.id}, '${memberId}', 'pending')"
+                    >
+                        ${status === "pending" ? "❓ Sin responder" : "Pendiente"}
+                    </button>
 
                 </div>
 
-            `;
-        }
+            </div>
+
+        `;
+
+    }).join("");
+
+}
+        function setParticipantStatus(eventId, memberId, status) {
+
+    const events =
+        JSON.parse(localStorage.getItem("curruscos_events")) || [];
+
+    const event = events.find(
+        e => String(e.id) === String(eventId)
+    );
+
+    if (!event) return;
+
+    if (!event.participants) {
+        event.participants = {};
+    }
+
+    event.participants[memberId] = status;
+
+    localStorage.setItem(
+        "curruscos_events",
+        JSON.stringify(events)
+    );
+
+    loadEventPage();
+}
 
         loadEventPage();
 
