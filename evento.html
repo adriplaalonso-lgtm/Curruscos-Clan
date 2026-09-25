@@ -1245,8 +1245,9 @@
 
 
 <script src="js/data.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/supabase.js"></script>
 <script src="js/app.js"></script>
-
 
 <style>
 
@@ -1627,89 +1628,73 @@
        CARGAR EVENTO
        ===================================================== */
 
-    function loadEvent() {
+ async function loadEvent() {
 
-        const params =
-            new URLSearchParams(window.location.search);
+    const params =
+        new URLSearchParams(window.location.search);
 
-        const eventId = params.get("id");
+    const eventId = params.get("id");
 
-        const events =
-            JSON.parse(
-                localStorage.getItem("curruscos_events") || "[]"
-            );
-
-        currentEvent = events.find(
-            event =>
-                String(event.id) ===
-                String(eventId)
-        );
-
-        if (!currentEvent) {
-
-            document.getElementById("eventTitle").textContent =
-                "Evento no encontrado";
-
-            return;
-
-        }
-
-
-        if (!Array.isArray(currentEvent.participants)) {
-
-            currentEvent.participants = [];
-
-        }
-
-
-        if (!Array.isArray(currentEvent.tasks)) {
-
-            currentEvent.tasks = [];
-
-        }
-
-
-        if (!Array.isArray(currentEvent.expenses)) {
-
-            currentEvent.expenses = [];
-
-        }
-
+    if (!eventId) {
 
         document.getElementById("eventTitle").textContent =
-            currentEvent.title || "Sin título";
+            "Evento no encontrado";
 
-
-        document.getElementById("eventDescription").textContent =
-            currentEvent.description || "Sin descripción";
-
-
-        document.getElementById("eventDate").textContent =
-            currentEvent.date || "Sin fecha";
-
-
-        document.getElementById("eventTime").textContent =
-            currentEvent.time || "Sin hora";
-
-
-        document.getElementById("eventLocation").textContent =
-            currentEvent.location || "Sin lugar";
-
-
-        renderParticipants();
-
-        renderTaskAssignees();
-
-        renderTasks();
-
-        renderExpenses();
-
-        updateProgress();
-
-        updateStatus();
-
+        return;
     }
 
+    // Obtener el evento directamente desde Supabase
+    currentEvent = await getGroupEvent(eventId);
+
+    if (!currentEvent) {
+
+        document.getElementById("eventTitle").textContent =
+            "Evento no encontrado";
+
+        return;
+    }
+
+    // Mantener estas estructuras preparadas mientras
+    // conectamos sus tablas de Supabase
+    if (!Array.isArray(currentEvent.participants)) {
+        currentEvent.participants = [];
+    }
+
+    if (!Array.isArray(currentEvent.tasks)) {
+        currentEvent.tasks = [];
+    }
+
+    if (!Array.isArray(currentEvent.expenses)) {
+        currentEvent.expenses = [];
+    }
+
+    document.getElementById("eventTitle").textContent =
+        currentEvent.title || "Sin título";
+
+    document.getElementById("eventDescription").textContent =
+        currentEvent.description || "Sin descripción";
+
+    document.getElementById("eventDate").textContent =
+        currentEvent.date || "Sin fecha";
+
+    document.getElementById("eventTime").textContent =
+        currentEvent.time || "Sin hora";
+
+    document.getElementById("eventLocation").textContent =
+        currentEvent.location || "Sin lugar";
+
+    renderParticipants();
+
+    renderTaskAssignees();
+
+    renderTasks();
+
+    renderExpenses();
+
+    updateProgress();
+
+    updateStatus();
+}
 
     /* =====================================================
        PARTICIPANTES
