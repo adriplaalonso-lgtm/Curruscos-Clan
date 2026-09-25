@@ -1008,7 +1008,36 @@
     <script src="js/supabase.js"></script>
     <script src="js/app.js"></script>
 
+<script>
 
+    async function initializeCurruscos() {
+
+        const user = await getCurrentUser();
+
+        // Si no hay sesión, no permitimos entrar al dashboard
+        if (!user) {
+            window.location.href = "login.html";
+            return;
+        }
+
+        // Obtener el grupo del usuario
+        const group = await getCurrentGroup();
+
+        if (!group) {
+            console.error("El usuario no pertenece a ningún grupo.");
+            return;
+        }
+
+        console.log("Curruscos Clan iniciado correctamente.");
+        console.log("Usuario:", user.id);
+        console.log("Grupo:", group.name);
+        console.log("Rol:", group.role);
+
+    }
+
+    initializeCurruscos();
+
+</script>
 
     <!-- =====================================================
          DASHBOARD JAVASCRIPT
