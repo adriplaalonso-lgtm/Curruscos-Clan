@@ -2513,85 +2513,107 @@ async function loadSupabaseExpenses() {
     }
 
 
-    document
-        .getElementById("expenseForm")
-        .addEventListener(
-            "submit",
-            function(event) {
+document
+    .getElementById("expenseForm")
+    .addEventListener(
+        "submit",
+        async function(event) {
 
-                event.preventDefault();
+            event.preventDefault();
 
-
-                const title =
-                    document
-                        .getElementById("expenseTitle")
-                        .value
-                        .trim();
-
-
-                const amount =
-                    Number(
-                        document
-                            .getElementById("expenseAmount")
-                            .value
-                    );
-
-
-                const payer =
-                    document
-                        .getElementById("expensePayer")
-                        .value;
-
-
-                if (
-                    !title ||
-                    !amount ||
-                    amount <= 0 ||
-                    !payer
-                ) {
-
-                    return;
-
-                }
-
-
-                currentEvent.expenses.push({
-
-                    id: Date.now(),
-
-                    title: title,
-
-                    amount: amount,
-
-                    payer: payer
-
-                });
-
-
-                saveEvent();
-
-
+            const title =
                 document
                     .getElementById("expenseTitle")
-                    .value = "";
+                    .value
+                    .trim();
 
 
-                document
-                    .getElementById("expenseAmount")
-                    .value = "";
+            const amount =
+                Number(
+                    document
+                        .getElementById("expenseAmount")
+                        .value
+                );
 
 
+            const payer =
                 document
                     .getElementById("expensePayer")
-                    .value = "";
+                    .value;
 
 
-                renderExpenses();
+            if (
+                !title ||
+                !amount ||
+                amount <= 0 ||
+                !payer
+            ) {
+
+                return;
 
             }
-        );
 
 
+            /*
+             * Guardamos el gasto en Supabase.
+             *
+             * De momento paid_by queda vacío porque
+             * todavía estamos conectando los miembros
+             * locales con sus cuentas reales de Supabase.
+             */
+
+            const expense =
+                await createEventExpense(
+                    currentEvent.id,
+                    title,
+                    amount,
+                    null
+                );
+
+
+            if (!expense) {
+
+                alert(
+                    "No se ha podido crear el gasto."
+                );
+
+                return;
+
+            }
+
+
+            currentEvent.expenses.push({
+
+                id: expense.id,
+
+                title: expense.title,
+
+                amount: Number(expense.amount),
+
+                payer: null
+
+            });
+
+
+            document
+                .getElementById("expenseTitle")
+                .value = "";
+
+            document
+                .getElementById("expenseAmount")
+                .value = "";
+
+            document
+                .getElementById("expensePayer")
+                .value = "";
+
+
+            renderExpenses();
+
+            updateProgress();
+
+        }
+    );
     /* =====================================================
        PROGRESO
        ===================================================== */
