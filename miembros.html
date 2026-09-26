@@ -421,7 +421,266 @@
 
                     }
                 );
+/* ==========================================
+   INVITAR MIEMBRO
+========================================== */
 
+const inviteMemberButton =
+    document.getElementById(
+        "inviteMemberButton"
+    );
+
+
+if (
+    currentGroup.role === "owner" ||
+    currentGroup.role === "admin"
+) {
+
+    inviteMemberButton.style.display =
+        "block";
+
+
+    inviteMemberButton.addEventListener(
+        "click",
+        async () => {
+
+            inviteMemberButton.disabled =
+                true;
+
+
+            /* Obtener miembros actuales */
+
+            const {
+                data: currentMembers,
+                error: currentMembersError
+            } = await supabaseClient
+                .from("group_members")
+                .select("user_id")
+                .eq(
+                    "group_id",
+                    currentGroup.id
+                );
+
+
+            if (currentMembersError) {
+
+                console.error(
+                    currentMembersError
+                );
+
+                alert(
+                    "No se han podido obtener los miembros."
+                );
+
+                inviteMemberButton.disabled =
+                    false;
+
+                return;
+
+            }
+
+
+            const currentMemberIds =
+                (currentMembers || [])
+                    .map(
+                        member =>
+                            member.user_id
+                    );
+
+
+            /* Obtener todos los perfiles */
+
+            const {
+                data: profiles,
+                error: profilesError
+            } = await supabaseClient
+                .from("profiles")
+                .select(`
+                    id,
+                    username,
+                    display_name
+                `)
+                .order(
+                    "display_name"
+                );
+
+
+            if (profilesError) {
+
+                console.error(
+                    profilesError
+                );
+
+                alert(
+                    "No se han podido obtener los usuarios."
+                );
+
+                inviteMemberButton.disabled =
+                    false;
+
+                return;
+
+            }
+
+
+            /* Usuarios que todavía no están en el grupo */
+
+            const availableUsers =
+                (profiles || [])
+                    .filter(
+                        profile =>
+                            !currentMemberIds.includes(
+                                profile.id
+                            )
+                    );
+
+
+            if (!availableUsers.length) {
+
+                alert(
+                    "No hay usuarios disponibles para invitar."
+                );
+
+                inviteMemberButton.disabled =
+                    false;
+
+                return;
+
+            }
+
+
+            /* Crear lista para elegir */
+
+            let message =
+                "¿A quién quieres invitar?\n\n";
+
+
+            availableUsers.forEach(
+                (profile, index) => {
+
+                    const name =
+                        profile.display_name ||
+                        profile.username ||
+                        "Usuario";
+
+                    message +=
+                        `${index + 1}. ${name}`;
+
+                    if (profile.username) {
+
+                        message +=
+                            ` (@${profile.username})`;
+
+                    }
+
+                    message += "\n";
+
+                }
+            );
+
+
+            const answer =
+                prompt(
+                    message +
+                    "\nEscribe el número:"
+                );
+
+
+            if (!answer) {
+
+                inviteMemberButton.disabled =
+                    false;
+
+                return;
+
+            }
+
+
+            const selectedIndex =
+                Number(answer) - 1;
+
+
+            if (
+                !Number.isInteger(
+                    selectedIndex
+                ) ||
+                selectedIndex < 0 ||
+                selectedIndex >=
+                    availableUsers.length
+            ) {
+
+                alert(
+                    "Selección no válida."
+                );
+
+                inviteMemberButton.disabled =
+                    false;
+
+                return;
+
+            }
+
+
+            const selectedUser =
+                availableUsers[
+                    selectedIndex
+                ];
+
+
+            /* Crear invitación */
+
+            const {
+                data: invitation,
+                error: invitationError
+            } = await supabaseClient.rpc(
+                "invite_user_to_group",
+                {
+                    target_group_id:
+                        currentGroup.id,
+
+                    target_user_id:
+                        selectedUser.id
+                }
+            );
+
+
+            if (invitationError) {
+
+                console.error(
+                    "Error creando invitación:",
+                    invitationError
+                );
+
+                alert(
+                    invitationError.message ||
+                    "No se ha podido enviar la invitación."
+                );
+
+                inviteMemberButton.disabled =
+                    false;
+
+                return;
+
+            }
+
+
+            alert(
+                "Invitación enviada correctamente."
+            );
+
+
+            inviteMemberButton.disabled =
+                false;
+
+        }
+    );
+
+} else {
+
+    inviteMemberButton.style.display =
+        "none";
+
+}
 
                 /* ==========================================
                    OBTENER MIEMBROS DEL GRUPO
