@@ -1546,17 +1546,63 @@
     let currentEvent = null;
 
 
-    function getMembers() {
+  let currentGroupMembers = [];
 
-        if (
-            typeof CURRUSCOS_DATA !== "undefined" &&
-            Array.isArray(CURRUSCOS_DATA.members)
-        ) {
-            return CURRUSCOS_DATA.members;
-        }
+function getMembers() {
+    return currentGroupMembers;
+}
 
-        return [];
+function getMemberName(member) {
+    return (
+        member.display_name ||
+        member.username ||
+        "Miembro"
+    );
+}
+
+function getMemberId(member) {
+    return String(member.user_id);
+}
+
+async function loadCurrentGroupMembers() {
+
+    const currentGroup =
+        await getCurrentGroup();
+
+    if (!currentGroup) {
+        currentGroupMembers = [];
+        return;
     }
+
+    const {
+        data,
+        error
+    } = await supabaseClient.rpc(
+        "get_group_members",
+        {
+            target_group_id: currentGroup.id
+        }
+    );
+
+    if (error) {
+
+        console.error(
+            "Error obteniendo miembros del grupo:",
+            error
+        );
+
+        currentGroupMembers = [];
+        return;
+    }
+
+    currentGroupMembers =
+        data || [];
+
+    console.log(
+        "MIEMBROS REALES DEL EVENTO:",
+        currentGroupMembers
+    );
+}
 
 
     function getMemberName(member) {
@@ -2150,24 +2196,21 @@ async function loadSupabaseExpenses() {
     }
 
 
-    function getAssigneeName(id) {
+   function getAssigneeName(id) {
 
-        const members = getMembers();
+    const member =
+        getMembers().find(
+            member =>
+                String(member.user_id) ===
+                String(id)
+        );
 
-        const index =
-            members.findIndex(
-                (member, position) =>
-                    String(
-                        getMemberId(member, position)
-                    ) === String(id)
-            );
+    if (!member) {
+        return "Miembro";
+    }
 
-
-        if (index === -1) {
-
-            return "Miembro";
-
-        }
+    return getMemberName(member);
+}
 
 
         return getMemberName(
@@ -2758,6 +2801,12 @@ document
        INICIO
        ===================================================== */
 
-    loadEvent();
+  (async () => {
+
+    await loadCurrentGroupMembers();
+
+    await loadEvent();
+
+})();
 
 </script>
