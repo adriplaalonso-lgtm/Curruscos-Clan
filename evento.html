@@ -1543,10 +1543,9 @@
        DATOS
        ===================================================== */
 
-    let currentEvent = null;
+  let currentEvent = null;
 
-
-  let currentGroupMembers = [];
+let currentGroupMembers = [];
 
 function getMembers() {
     return currentGroupMembers;
@@ -1585,7 +1584,6 @@ async function loadCurrentGroupMembers() {
     );
 
     if (error) {
-
         console.error(
             "Error obteniendo miembros del grupo:",
             error
@@ -1603,77 +1601,6 @@ async function loadCurrentGroupMembers() {
         currentGroupMembers
     );
 }
-
-
-    function getMemberName(member) {
-
-        return (
-            member.name ||
-            member.nombre ||
-            member.username ||
-            member.user ||
-            "Miembro"
-        );
-
-    }
-
-
-    function getMemberId(member, index) {
-
-        return String(
-            member.id ??
-            member._id ??
-            member.name ??
-            member.nombre ??
-            index
-        );
-
-    }
-
-
-    function escapeHtml(value) {
-
-        return String(value ?? "")
-            .replaceAll("&", "&amp;")
-            .replaceAll("<", "&lt;")
-            .replaceAll(">", "&gt;")
-            .replaceAll('"', "&quot;")
-            .replaceAll("'", "&#039;");
-
-    }
-
-
-    function saveEvent() {
-
-        const events =
-            JSON.parse(
-                localStorage.getItem("curruscos_events") || "[]"
-            );
-
-        const index = events.findIndex(
-            event =>
-                String(event.id) ===
-                String(currentEvent.id)
-        );
-
-        if (index !== -1) {
-
-            events[index] = currentEvent;
-
-            localStorage.setItem(
-                "curruscos_events",
-                JSON.stringify(events)
-            );
-
-        }
-
-    }
-
-
-    /* =====================================================
-       CARGAR EVENTO
-       ===================================================== */
-
  async function loadEvent() {
 
     const params =
