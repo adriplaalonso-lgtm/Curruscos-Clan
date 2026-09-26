@@ -516,11 +516,28 @@ if (
                    OBTENER MIEMBROS DEL GRUPO
                 ========================================== */
 
-              const {
+             const {
     data: members,
     error
-} = await supabaseClient
-    .from("group_members")
+} = await supabaseClient.rpc(
+    "get_group_members",
+    {
+        target_group_id: currentGroup.id
+    }
+);
+
+if (error) {
+    console.error(
+        "Error cargando miembros:",
+        error
+    );
+    return;
+}
+
+console.log(
+    "MIEMBROS RECIBIDOS:",
+    members
+);
     .select(`
         user_id,
         role,
