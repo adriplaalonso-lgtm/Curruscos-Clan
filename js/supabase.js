@@ -60,13 +60,11 @@ async function getCurrentProfile() {
 // GRUPO ACTUAL
 // ========================================
 
-async function getCurrentGroup() {
+async function getUserGroups() {
 
     const user = await getCurrentUser();
 
-    if (!user) {
-        return null;
-    }
+    if (!user) return [];
 
     const { data, error } = await supabaseClient
         .from("group_members")
@@ -78,23 +76,86 @@ async function getCurrentGroup() {
                 description
             )
         `)
-        .eq("user_id", user.id)
-        .single();
+        .eq("user_id", user.id);
 
     if (error) {
-        console.error("Error obteniendo grupo:", error);
-        return null;
+        console.error("Error obteniendo grupos:", error);
+        return [];
     }
 
-    return {
-        id: data.groups.id,
-        name: data.groups.name,
-        description: data.groups.description,
-        role: data.role
-    };
+    return (data || [])
+        .filter(item => item.groups)
+        .map(item => ({
+            id: item.groups.id,
+            name: item.groups.name,
+            description: item.groups.description,
+            role: item.role
+        }));
 }
 
 
+async function getCurrentGroup() {
+
+    const groups = await getUserGroups();
+
+    if (groups.length === 0) {
+        return null;
+    }
+
+    const savedGroupId =
+        localStorage.getItem("curruscos_current_group");
+
+    if (savedGroupId) {
+
+        const savedGroup =
+            groups.find(group =>
+                group.id === savedGroupId
+            );
+
+        if (savedGroup) {
+            return savedGroup;
+        }
+
+    }
+
+    return groups[0];
+}
+
+
+function setCurrentGroup(groupId) {
+
+    localStorage.setItem(
+        "curruscos_current_group",
+        groupId
+    );
+
+}
+
+
+async function createGroup(name, description) {
+
+    const { data, error } =
+        await supabaseClient.rpc(
+            "create_group",
+            {
+                group_name: name,
+                group_description: description || null
+            }
+        );
+
+    if (error) {
+
+        console.error(
+            "Error creando grupo:",
+            error
+        );
+
+        return null;
+    }
+
+    return data;
+
+}
 // ========================================
 // EVENTOS
 // ========================================
