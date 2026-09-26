@@ -1279,15 +1279,15 @@
             }
 
 
-            button.innerHTML = `
-                <strong>
-                    ${escapeHtml(group.name)}
-                </strong>
+          button.innerHTML = `
+    <strong>
+        ${String(group.name ?? "")}
+    </strong>
 
-                <span>
-                    ${escapeHtml(group.role)}
-                </span>
-            `;
+    <span>
+        ${String(group.role ?? "")}
+    </span>
+`;
 
 
             button.addEventListener(
