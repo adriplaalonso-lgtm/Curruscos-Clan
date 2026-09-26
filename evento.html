@@ -2178,65 +2178,87 @@ async function loadSupabaseExpenses() {
 
 
     document
-        .getElementById("taskForm")
-        .addEventListener(
-            "submit",
-            function(event) {
+    .getElementById("taskForm")
+    .addEventListener(
+        "submit",
+        async function(event) {
 
-                event.preventDefault();
+            event.preventDefault();
 
-
-                const title =
-                    document
-                        .getElementById("taskTitle")
-                        .value
-                        .trim();
-
-
-                const assignee =
-                    document
-                        .getElementById("taskAssignee")
-                        .value;
-
-
-                if (!title) return;
-
-
-                currentEvent.tasks.push({
-
-                    id: Date.now(),
-
-                    title: title,
-
-                    assignee: assignee,
-
-                    completed: false
-
-                });
-
-
-                saveEvent();
-
-
+            const title =
                 document
                     .getElementById("taskTitle")
-                    .value = "";
+                    .value
+                    .trim();
 
-
+            const assignee =
                 document
                     .getElementById("taskAssignee")
-                    .value = "";
+                    .value;
+
+            if (!title) return;
 
 
-                renderTasks();
+            /*
+             * Por ahora guardamos la tarea en Supabase.
+             *
+             * El sistema de miembros todavía utiliza
+             * los IDs locales de data.js, mientras que
+             * Supabase utiliza UUIDs de usuarios.
+             *
+             * Por eso assigned_to queda vacío hasta que
+             * conectemos los miembros con sus cuentas.
+             */
 
-                updateProgress();
+            const task =
+                await createEventTask(
+                    currentEvent.id,
+                    title,
+                    null
+                );
 
-                updateStatus();
+
+            if (!task) {
+
+                alert(
+                    "No se ha podido crear la tarea."
+                );
+
+                return;
 
             }
-        );
 
+
+            currentEvent.tasks.push({
+
+                id: task.id,
+
+                title: task.title,
+
+                assignee: null,
+
+                completed: task.completed
+
+            });
+
+
+            document
+                .getElementById("taskTitle")
+                .value = "";
+
+            document
+                .getElementById("taskAssignee")
+                .value = "";
+
+
+            renderTasks();
+
+            updateProgress();
+
+            updateStatus();
+
+        }
+    );
 
     /* =====================================================
        GASTOS
