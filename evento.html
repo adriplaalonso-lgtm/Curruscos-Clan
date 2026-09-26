@@ -1667,6 +1667,7 @@ async function loadCurrentGroupMembers() {
 
   const participants =
     await getEventParticipants(currentEvent.id);
+     console.log("PARTICIPANTES DE SUPABASE:", participants);
 
 currentEvent.participants =
     (participants || []).map(participant => ({
