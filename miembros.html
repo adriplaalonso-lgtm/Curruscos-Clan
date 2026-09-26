@@ -516,24 +516,27 @@ if (
                    OBTENER MIEMBROS DEL GRUPO
                 ========================================== */
 
-                const {
-                    data: members,
-                    error
-                } = await supabaseClient
-                    .from("group_members")
-                    .select(`
-                        user_id,
-                        role,
-                        profiles (
-                            id,
-                            display_name,
-                            username
-                        )
-                    `)
-                    .eq(
-                        "group_id",
-                        currentGroup.id
-                    );
+              const {
+    data: members,
+    error
+} = await supabaseClient
+    .from("group_members")
+    .select(`
+        user_id,
+        role,
+        profiles (
+            id,
+            display_name,
+            username
+        )
+    `)
+    .eq("group_id", currentGroup.id);
+
+if (error) {
+    console.error("Error cargando miembros:", error);
+}
+
+console.log("MIEMBROS RECIBIDOS:", members);
 
 
                 if (error) {
