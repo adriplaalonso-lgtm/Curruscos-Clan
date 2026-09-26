@@ -2076,6 +2076,230 @@
 
 </script>
 
+<script>
+
+    /* ==========================================
+       INVITACIONES PENDIENTES
+    ========================================== */
+
+    async function loadPendingInvitations() {
+
+        const container =
+            document.getElementById(
+                "invitationsContainer"
+            );
+
+        if (!container) {
+            return;
+        }
+
+        const user =
+            await getCurrentUser();
+
+        if (!user) {
+            return;
+        }
+
+        const {
+            data: invitations,
+            error
+        } = await supabaseClient
+            .from("group_invitations")
+            .select(`
+                id,
+                group_id,
+                created_at,
+                groups (
+                    name,
+                    description
+                )
+            `)
+            .eq(
+                "invited_user_id",
+                user.id
+            )
+            .eq(
+                "status",
+                "pending"
+            )
+            .order(
+                "created_at",
+                {
+                    ascending: false
+                }
+            );
+
+        if (error) {
+
+            console.error(
+                "Error obteniendo invitaciones:",
+                error
+            );
+
+            return;
+        }
+
+        if (
+            !invitations ||
+            !invitations.length
+        ) {
+
+            container.innerHTML = "";
+
+            return;
+        }
+
+        container.innerHTML = "";
+
+        invitations.forEach(
+            invitation => {
+
+                const group =
+                    invitation.groups;
+
+                const card =
+                    document.createElement(
+                        "div"
+                    );
+
+                card.style.cssText = `
+                    background:#fff;
+                    border:1px solid #e7e7e7;
+                    border-radius:16px;
+                    padding:20px;
+                    margin-bottom:15px;
+                    display:flex;
+                    justify-content:space-between;
+                    align-items:center;
+                    gap:20px;
+                    flex-wrap:wrap;
+                `;
+
+                card.innerHTML = `
+
+                    <div>
+
+                        <strong
+                            style="
+                                display:block;
+                                font-size:16px;
+                                margin-bottom:5px;
+                            "
+                        >
+                            Invitación a ${String(
+                                group?.name ||
+                                "un grupo"
+                            )}
+                        </strong>
+
+                        <span
+                            style="
+                                color:#777;
+                                font-size:13px;
+                            "
+                        >
+                            Te han invitado a formar parte
+                            de este grupo.
+                        </span>
+
+                    </div>
+
+                    <button
+                        type="button"
+                        class="accept-invitation-button"
+                        data-invitation-id="${invitation.id}"
+                        style="
+                            border:none;
+                            background:#111;
+                            color:#fff;
+                            padding:11px 18px;
+                            border-radius:10px;
+                            font-weight:700;
+                            cursor:pointer;
+                        "
+                    >
+                        Aceptar
+                    </button>
+
+                `;
+
+                container.appendChild(card);
+
+            }
+        );
+
+        const buttons =
+            container.querySelectorAll(
+                ".accept-invitation-button"
+            );
+
+        buttons.forEach(
+            button => {
+
+                button.addEventListener(
+                    "click",
+                    async () => {
+
+                        const invitationId =
+                            button.dataset
+                                .invitationId;
+
+                        button.disabled = true;
+
+                        button.textContent =
+                            "Aceptando...";
+
+                        const {
+                            error
+                        } =
+                            await supabaseClient.rpc(
+                                "accept_group_invitation",
+                                {
+                                    invitation_id:
+                                        invitationId
+                                }
+                            );
+
+                        if (error) {
+
+                            console.error(
+                                "Error aceptando invitación:",
+                                error
+                            );
+
+                            alert(
+                                error.message ||
+                                "No se ha podido aceptar la invitación."
+                            );
+
+                            button.disabled =
+                                false;
+
+                            button.textContent =
+                                "Aceptar";
+
+                            return;
+
+                        }
+
+                        alert(
+                            "¡Ya formas parte del grupo!"
+                        );
+
+                        window.location.reload();
+
+                    }
+                );
+
+            }
+        );
+
+    }
+
+    loadPendingInvitations();
+
+</script>
+
 </body>
 
 </html>
