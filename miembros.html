@@ -13,9 +13,55 @@
 
     <header class="navbar">
 
-        <a href="index.html" class="logo">
-            CURRUSCOS.
-        </a>
+        <div class="brand-group">
+
+            <a href="index.html" class="logo">
+                CURRUSCOS<span>.</span>
+            </a>
+
+            <div class="group-selector">
+
+                <button
+                    type="button"
+                    id="currentGroupButton"
+                    class="current-group-button"
+                >
+                    <span id="currentGroupName">
+                        Cargando grupo...
+                    </span>
+
+                    <span class="group-selector-arrow">
+                        ▾
+                    </span>
+                </button>
+
+                <div
+                    id="groupMenu"
+                    class="group-menu"
+                    hidden
+                >
+
+                    <div
+                        id="groupList"
+                        class="group-list"
+                    ></div>
+
+                    <div class="group-menu-divider"></div>
+
+                    <button
+                        type="button"
+                        id="createGroupButton"
+                        class="create-group-button"
+                    >
+                        ＋ Crear un grupo
+                    </button>
+
+                </div>
+
+            </div>
+
+        </div>
+
 
         <nav id="mainNav">
             <a href="index.html">Inicio</a>
@@ -24,6 +70,7 @@
             <a href="recuerdos.html">Recuerdos</a>
             <a href="eventos.html">Eventos</a>
         </nav>
+
 
         <button id="menuButton" class="menu-button">
             ☰
@@ -47,8 +94,8 @@
                     que esto exista.
                 </h1>
 
-                <p>
-                    Ocho personas. Infinitas historias.
+                <p id="membersSubtitle">
+                    Cargando miembros...
                 </p>
 
             </div>
@@ -85,8 +132,415 @@
     </footer>
 
 
-    <script src="js/data.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/supabase.js"></script>
     <script src="js/app.js"></script>
+
+
+    <script>
+
+        document.addEventListener(
+            "DOMContentLoaded",
+            async () => {
+
+                const groupButton =
+                    document.getElementById(
+                        "currentGroupButton"
+                    );
+
+                const groupName =
+                    document.getElementById(
+                        "currentGroupName"
+                    );
+
+                const groupMenu =
+                    document.getElementById(
+                        "groupMenu"
+                    );
+
+                const groupList =
+                    document.getElementById(
+                        "groupList"
+                    );
+
+                const createGroupButton =
+                    document.getElementById(
+                        "createGroupButton"
+                    );
+
+                const membersGrid =
+                    document.getElementById(
+                        "membersGrid"
+                    );
+
+                const membersSubtitle =
+                    document.getElementById(
+                        "membersSubtitle"
+                    );
+
+
+                /* ==========================================
+                   USUARIO
+                ========================================== */
+
+                const user =
+                    await getCurrentUser();
+
+                if (!user) {
+
+                    window.location.href =
+                        "login.html";
+
+                    return;
+
+                }
+
+
+                /* ==========================================
+                   GRUPO ACTUAL
+                ========================================== */
+
+                const groups =
+                    await getUserGroups();
+
+                if (!groups.length) {
+
+                    groupName.textContent =
+                        "Sin grupo";
+
+                    membersSubtitle.textContent =
+                        "Todavía no perteneces a ningún grupo.";
+
+                    membersGrid.innerHTML = `
+                        <p>
+                            No tienes ningún grupo todavía.
+                        </p>
+                    `;
+
+                    return;
+
+                }
+
+
+                const currentGroup =
+                    await getCurrentGroup();
+
+
+                if (!currentGroup) {
+
+                    membersSubtitle.textContent =
+                        "No se ha podido cargar el grupo.";
+
+                    return;
+
+                }
+
+
+                groupName.textContent =
+                    currentGroup.name;
+
+
+                /* ==========================================
+                   SELECTOR DE GRUPOS
+                ========================================== */
+
+                groupButton.addEventListener(
+                    "click",
+                    () => {
+
+                        groupMenu.hidden =
+                            !groupMenu.hidden;
+
+                    }
+                );
+
+
+                groupList.innerHTML = "";
+
+
+                groups.forEach(
+                    group => {
+
+                        const button =
+                            document.createElement(
+                                "button"
+                            );
+
+                        button.type = "button";
+
+                        button.className =
+                            "group-option";
+
+
+                        if (
+                            group.id ===
+                            currentGroup.id
+                        ) {
+
+                            button.classList.add(
+                                "active"
+                            );
+
+                        }
+
+
+                        button.innerHTML = `
+                            <strong>
+                                ${String(
+                                    group.name ?? ""
+                                )}
+                            </strong>
+
+                            <span>
+                                ${String(
+                                    group.role ?? ""
+                                )}
+                            </span>
+                        `;
+
+
+                        button.addEventListener(
+                            "click",
+                            () => {
+
+                                setCurrentGroup(
+                                    group.id
+                                );
+
+                                window.location.reload();
+
+                            }
+                        );
+
+
+                        groupList.appendChild(
+                            button
+                        );
+
+                    }
+                );
+
+
+                /* ==========================================
+                   CREAR GRUPO
+                ========================================== */
+
+                createGroupButton.addEventListener(
+                    "click",
+                    async () => {
+
+                        const name =
+                            prompt(
+                                "Nombre del nuevo grupo:"
+                            );
+
+
+                        if (
+                            !name ||
+                            !name.trim()
+                        ) {
+
+                            return;
+
+                        }
+
+
+                        const description =
+                            prompt(
+                                "Descripción del grupo (opcional):"
+                            );
+
+
+                        createGroupButton.disabled =
+                            true;
+
+
+                        const newGroup =
+                            await createGroup(
+                                name.trim(),
+                                description
+                                    ? description.trim()
+                                    : null
+                            );
+
+
+                        createGroupButton.disabled =
+                            false;
+
+
+                        if (!newGroup) {
+
+                            alert(
+                                "No se ha podido crear el grupo."
+                            );
+
+                            return;
+
+                        }
+
+
+                        setCurrentGroup(
+                            newGroup.id
+                        );
+
+                        window.location.reload();
+
+                    }
+                );
+
+
+                /* ==========================================
+                   OBTENER MIEMBROS DEL GRUPO
+                ========================================== */
+
+                const {
+                    data: members,
+                    error
+                } = await supabaseClient
+                    .from("group_members")
+                    .select(`
+                        user_id,
+                        role,
+                        profiles (
+                            id,
+                            display_name,
+                            username
+                        )
+                    `)
+                    .eq(
+                        "group_id",
+                        currentGroup.id
+                    );
+
+
+                if (error) {
+
+                    console.error(
+                        "Error obteniendo miembros:",
+                        error
+                    );
+
+                    membersSubtitle.textContent =
+                        "No se han podido cargar los miembros.";
+
+                    membersGrid.innerHTML = `
+                        <p>
+                            Error cargando los miembros.
+                        </p>
+                    `;
+
+                    return;
+
+                }
+
+
+                /* ==========================================
+                   MOSTRAR MIEMBROS
+                ========================================== */
+
+                const validMembers =
+                    (members || [])
+                        .filter(
+                            member =>
+                                member.profiles
+                        );
+
+
+                membersSubtitle.textContent =
+                    validMembers.length === 1
+                        ? "1 persona forma parte de este grupo."
+                        : `${validMembers.length} personas forman parte de este grupo.`;
+
+
+                membersGrid.innerHTML = "";
+
+
+                validMembers.forEach(
+                    member => {
+
+                        const profile =
+                            member.profiles;
+
+
+                        const card =
+                            document.createElement(
+                                "div"
+                            );
+
+                        card.className =
+                            "member-card";
+
+
+                        const displayName =
+                            profile.display_name ||
+                            profile.username ||
+                            "Usuario";
+
+
+                        const role =
+                            member.role === "owner"
+                                ? "Propietario"
+                                : member.role === "admin"
+                                    ? "Administrador"
+                                    : "Miembro";
+
+
+                        card.innerHTML = `
+
+                            <div class="member-avatar">
+                                ${String(
+                                    displayName
+                                        .charAt(0)
+                                        .toUpperCase()
+                                )}
+                            </div>
+
+                            <div class="member-info">
+
+                                <h3>
+                                    ${String(
+                                        displayName
+                                    )}
+                                </h3>
+
+                                <p>
+                                    @${String(
+                                        profile.username ||
+                                        ""
+                                    )}
+                                </p>
+
+                                <span>
+                                    ${role}
+                                </span>
+
+                            </div>
+
+                        `;
+
+
+                        membersGrid.appendChild(
+                            card
+                        );
+
+                    }
+                );
+
+
+                if (!validMembers.length) {
+
+                    membersGrid.innerHTML = `
+                        <p>
+                            Este grupo todavía no tiene miembros.
+                        </p>
+                    `;
+
+                }
+
+            }
+        );
+
+    </script>
 
 </body>
 </html>
