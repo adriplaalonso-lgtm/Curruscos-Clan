@@ -2123,7 +2123,7 @@ async function loadSupabaseExpenses() {
     }
 
 
-  function getAssigneeName(id) {
+ function getAssigneeName(id) {
 
     const member = getMembers().find(
         member =>
@@ -2138,14 +2138,7 @@ async function loadSupabaseExpenses() {
 }
 
 
-        return getMemberName(
-            members[index]
-        );
-
-    }
-
-
-    document
+document
     .getElementById("taskForm")
     .addEventListener(
         "submit",
