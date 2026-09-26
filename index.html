@@ -1371,87 +1371,229 @@
          DASHBOARD JAVASCRIPT
     ===================================================== -->
 
-    <script>
+  <script>
 
-        document.addEventListener("DOMContentLoaded", () => {
+    document.addEventListener("DOMContentLoaded", async () => {
 
-            /* ===============================================
-               MIEMBROS
-            =============================================== */
+        /* ===============================================
+           GRUPO ACTUAL
+        =============================================== */
 
-            function getMembers() {
+        const currentGroup = await getCurrentGroup();
 
-                if (
-                    typeof CURRUSCOS_DATA !== "undefined" &&
-                    Array.isArray(CURRUSCOS_DATA.members)
-                ) {
-                    return CURRUSCOS_DATA.members;
+        if (!currentGroup) {
+            console.error("No hay grupo seleccionado.");
+            return;
+        }
+
+
+        /* ===============================================
+           ELEMENTOS DEL DASHBOARD
+        =============================================== */
+
+        const membersElement =
+            document.getElementById("dashboardMembers");
+
+        const eventsElement =
+            document.getElementById("dashboardEvents");
+
+        const tasksElement =
+            document.getElementById("dashboardTasks");
+
+        const memoriesElement =
+            document.getElementById("dashboardMemories");
+
+        const nextEventContent =
+            document.getElementById("nextEventContent");
+
+        const upcomingContainer =
+            document.getElementById("upcomingEvents");
+
+        const activityList =
+            document.getElementById("activityList");
+
+
+        /* ===============================================
+           MIEMBROS DEL GRUPO
+        =============================================== */
+
+        const { data: groupMembers, error: membersError } =
+            await supabaseClient
+                .from("group_members")
+                .select("user_id, role")
+                .eq("group_id", currentGroup.id);
+
+
+        if (membersError) {
+
+            console.error(
+                "Error obteniendo miembros:",
+                membersError
+            );
+
+        }
+
+
+        const members =
+            groupMembers || [];
+
+
+        membersElement.textContent =
+            members.length;
+
+
+
+        /* ===============================================
+           EVENTOS DEL GRUPO
+        =============================================== */
+
+        const events =
+            await getGroupEvents();
+
+
+        const validEvents =
+            Array.isArray(events)
+                ? events
+                : [];
+
+
+        eventsElement.textContent =
+            validEvents.length;
+
+
+
+        /* ===============================================
+           TAREAS DEL GRUPO
+        =============================================== */
+
+        let totalTasks = 0;
+
+
+        for (const event of validEvents) {
+
+            const tasks =
+                await getEventTasks(event.id);
+
+            totalTasks +=
+                Array.isArray(tasks)
+                    ? tasks.length
+                    : 0;
+
+        }
+
+
+        tasksElement.textContent =
+            totalTasks;
+
+
+
+        /* ===============================================
+           RECUERDOS
+           
+           Todavía utilizamos los datos antiguos
+           hasta que migremos recuerdos a Supabase.
+        =============================================== */
+
+        let memories = [];
+
+
+        try {
+
+            const possibleKeys = [
+                "curruscos_memories",
+                "curruscos_recuerdos"
+            ];
+
+
+            for (const key of possibleKeys) {
+
+                const stored =
+                    JSON.parse(
+                        localStorage.getItem(key)
+                    );
+
+
+                if (Array.isArray(stored)) {
+
+                    memories = stored;
+                    break;
+
                 }
-
-                return [];
 
             }
 
+        } catch (error) {
 
-            const members = getMembers();
+            memories = [];
+
+        }
 
 
+        if (
+            memories.length === 0 &&
+            typeof CURRUSCOS_DATA !== "undefined"
+        ) {
 
-            /* ===============================================
-               EVENTOS
-            =============================================== */
+            if (
+                Array.isArray(
+                    CURRUSCOS_DATA.memories
+                )
+            ) {
 
-            function getEvents() {
-
-                try {
-
-                    const events =
-                        JSON.parse(
-                            localStorage.getItem("curruscos_events")
-                        );
-
-                    return Array.isArray(events)
-                        ? events
-                        : [];
-
-                } catch (error) {
-
-                    return [];
-
-                }
+                memories =
+                    CURRUSCOS_DATA.memories;
 
             }
 
+            else if (
+                Array.isArray(
+                    CURRUSCOS_DATA.recuerdos
+                )
+            ) {
 
-            const events = getEvents();
+                memories =
+                    CURRUSCOS_DATA.recuerdos;
+
+            }
+
+        }
+
+
+        memoriesElement.textContent =
+            memories.length;
 
 
 
-            /* ===============================================
-               FECHAS
-            =============================================== */
+        /* ===============================================
+           FECHAS
+        =============================================== */
 
-            function getEventDate(event) {
+        function getEventDate(event) {
 
-                if (!event.date) {
-                    return null;
-                }
+            if (!event.date) {
+                return null;
+            }
 
-                const date = new Date(
+
+            const date =
+                new Date(
                     `${event.date}T${event.time || "00:00"}`
                 );
 
-                return isNaN(date.getTime())
-                    ? null
-                    : date;
 
-            }
+            return isNaN(date.getTime())
+                ? null
+                : date;
 
-
-            const now = new Date();
+        }
 
 
-            const upcomingEvents = events
+        const now =
+            new Date();
+
+
+        const upcomingEvents =
+            validEvents
                 .map(event => ({
                     event,
                     date: getEventDate(event)
@@ -1466,508 +1608,468 @@
 
 
 
-            /* ===============================================
-               CONTADORES
-            =============================================== */
+        /* ===============================================
+           PRÓXIMO EVENTO
+        =============================================== */
 
-            document.getElementById("dashboardMembers")
-                .textContent = members.length;
+        if (upcomingEvents.length > 0) {
 
+            const next =
+                upcomingEvents[0];
 
-            document.getElementById("dashboardEvents")
-                .textContent = events.length;
+            const event =
+                next.event;
 
-
-            const totalTasks = events.reduce(
-                (total, event) =>
-                    total +
-                    (Array.isArray(event.tasks)
-                        ? event.tasks.length
-                        : 0),
-                0
-            );
+            const date =
+                next.date;
 
 
-            document.getElementById("dashboardTasks")
-                .textContent = totalTasks;
+            const formattedDate =
+                date.toLocaleDateString(
+                    "es-ES",
+                    {
+                        weekday: "long",
+                        day: "numeric",
+                        month: "long"
+                    }
+                );
+
+
+            nextEventContent.innerHTML = `
+
+                <div class="next-event-date">
+                    📅 ${formattedDate}
+                </div>
+
+                <h2 class="next-event-title">
+                    ${escapeHtml(
+                        event.title || "Evento"
+                    )}
+                </h2>
+
+                ${
+                    event.location
+                        ? `
+                            <div class="next-event-location">
+                                📍 ${escapeHtml(
+                                    event.location
+                                )}
+                            </div>
+                          `
+                        : ""
+                }
+
+                <a
+                    href="evento.html?id=${encodeURIComponent(event.id)}"
+                    class="next-event-button"
+                >
+                    Ver evento →
+                </a>
+
+            `;
+
+        }
+
+        else {
+
+            nextEventContent.innerHTML = `
+
+                <div class="no-event">
+
+                    Todavía no hay ningún
+                    evento próximo.
+
+                    <br><br>
+
+                    <a href="eventos.html">
+                        Crear un evento →
+                    </a>
+
+                </div>
+
+            `;
+
+        }
 
 
 
-            /* ===============================================
-               RECUERDOS
-               Intentamos detectar datos existentes sin romper
-               nada si todavía no existen.
-            =============================================== */
+        /* ===============================================
+           PRÓXIMOS EVENTOS
+        =============================================== */
 
-            let memories = [];
+        if (upcomingEvents.length > 0) {
 
-            try {
+            upcomingContainer.innerHTML = "";
 
-                const possibleKeys = [
-                    "curruscos_memories",
-                    "curruscos_recuerdos"
-                ];
 
-                for (const key of possibleKeys) {
+            upcomingEvents
+                .slice(0, 5)
+                .forEach(item => {
 
-                    const stored =
-                        JSON.parse(
-                            localStorage.getItem(key)
+                    const event =
+                        item.event;
+
+                    const date =
+                        item.date;
+
+
+                    const day =
+                        date.toLocaleDateString(
+                            "es-ES",
+                            {
+                                day: "numeric",
+                                month: "short"
+                            }
                         );
 
-                    if (Array.isArray(stored)) {
 
-                        memories = stored;
-                        break;
-
-                    }
-
-                }
-
-            } catch (error) {
-
-                memories = [];
-
-            }
+                    const time =
+                        event.time
+                            ? ` · ${event.time}`
+                            : "";
 
 
-            if (
-                memories.length === 0 &&
-                typeof CURRUSCOS_DATA !== "undefined"
-            ) {
-
-                if (Array.isArray(CURRUSCOS_DATA.memories)) {
-                    memories = CURRUSCOS_DATA.memories;
-                }
-
-                else if (Array.isArray(CURRUSCOS_DATA.recuerdos)) {
-                    memories = CURRUSCOS_DATA.recuerdos;
-                }
-
-            }
+                    const element =
+                        document.createElement("div");
 
 
-            document.getElementById("dashboardMemories")
-                .textContent = memories.length;
+                    element.className =
+                        "upcoming-event";
 
 
+                    element.innerHTML = `
 
-            /* ===============================================
-               PRÓXIMO EVENTO
-            =============================================== */
+                        <div class="upcoming-event-info">
 
-            const nextEventContent =
-                document.getElementById("nextEventContent");
+                            <strong>
+                                ${escapeHtml(
+                                    event.title ||
+                                    "Evento"
+                                )}
+                            </strong>
+
+                            <span>
+                                ${
+                                    event.location
+                                        ? "📍 " +
+                                          escapeHtml(
+                                              event.location
+                                          )
+                                        : "Sin ubicación"
+                                }
+
+                                ${time}
+
+                            </span>
+
+                        </div>
 
 
-            if (upcomingEvents.length > 0) {
+                        <div class="upcoming-event-date">
+                            ${day}
+                        </div>
 
-                const next = upcomingEvents[0];
-                const event = next.event;
-                const date = next.date;
+                    `;
 
 
-                const formattedDate =
-                    date.toLocaleDateString(
-                        "es-ES",
-                        {
-                            weekday: "long",
-                            day: "numeric",
-                            month: "long"
+                    element.style.cursor =
+                        "pointer";
+
+
+                    element.addEventListener(
+                        "click",
+                        () => {
+
+                            window.location.href =
+                                `evento.html?id=${encodeURIComponent(
+                                    event.id
+                                )}`;
+
                         }
                     );
 
 
-                nextEventContent.innerHTML = `
-
-                    <div class="next-event-date">
-                        📅 ${formattedDate}
-                    </div>
-
-                    <h2 class="next-event-title">
-                        ${escapeHtml(event.title || "Evento")}
-                    </h2>
-
-                    ${
-                        event.location
-                            ? `
-                                <div class="next-event-location">
-                                    📍 ${escapeHtml(event.location)}
-                                </div>
-                              `
-                            : ""
-                    }
-
-                    <a
-                        href="evento.html?id=${encodeURIComponent(event.id)}"
-                        class="next-event-button"
-                    >
-                        Ver evento →
-                    </a>
-
-                `;
-
-            }
-
-
-
-            /* ===============================================
-               PRÓXIMOS EVENTOS
-            =============================================== */
-
-            const upcomingContainer =
-                document.getElementById("upcomingEvents");
-
-
-            if (upcomingEvents.length > 0) {
-
-                upcomingContainer.innerHTML = "";
-
-
-                upcomingEvents
-                    .slice(0, 5)
-                    .forEach(item => {
-
-                        const event = item.event;
-                        const date = item.date;
-
-
-                        const day =
-                            date.toLocaleDateString(
-                                "es-ES",
-                                {
-                                    day: "numeric",
-                                    month: "short"
-                                }
-                            );
-
-
-                        const time =
-                            event.time
-                                ? ` · ${event.time}`
-                                : "";
-
-
-                        const element =
-                            document.createElement("div");
-
-
-                        element.className =
-                            "upcoming-event";
-
-
-                        element.innerHTML = `
-
-                            <div class="upcoming-event-info">
-
-                                <strong>
-                                    ${escapeHtml(
-                                        event.title || "Evento"
-                                    )}
-                                </strong>
-
-                                <span>
-                                    ${
-                                        event.location
-                                            ? "📍 " +
-                                              escapeHtml(
-                                                  event.location
-                                              )
-                                            : "Sin ubicación"
-                                    }
-                                    ${time}
-                                </span>
-
-                            </div>
-
-
-                            <div class="upcoming-event-date">
-                                ${day}
-                            </div>
-
-                        `;
-
-
-                        element.style.cursor = "pointer";
-
-
-                        element.addEventListener(
-                            "click",
-                            () => {
-
-                                window.location.href =
-                                    `evento.html?id=${encodeURIComponent(
-                                        event.id
-                                    )}`;
-
-                            }
-                        );
-
-
-                        upcomingContainer.appendChild(element);
-
-                    });
-
-            }
-
-
-
-            /* ===============================================
-               ACTIVIDAD
-            =============================================== */
-
-            const activityList =
-                document.getElementById("activityList");
-
-
-            const activities = [];
-
-
-            events
-                .slice()
-                .sort((a, b) => {
-
-                    return Number(b.id || 0) -
-                           Number(a.id || 0);
-
-                })
-                .slice(0, 5)
-                .forEach(event => {
-
-                    activities.push({
-
-                        icon: "📅",
-
-                        title:
-                            `Se creó el evento "${event.title || "Evento"}"`,
-
-                        detail:
-                            event.date
-                                ? formatDate(event.date)
-                                : "Evento reciente"
-
-                    });
-
-                });
-
-
-            if (memories.length > 0) {
-
-                activities.unshift({
-
-                    icon: "📸",
-
-                    title:
-                        `Hay ${memories.length} recuerdos guardados`,
-
-                    detail:
-                        "El archivo del clan sigue creciendo"
-
-                });
-
-            }
-
-
-            if (activities.length > 0) {
-
-                activityList.innerHTML = "";
-
-
-                activities
-                    .slice(0, 6)
-                    .forEach(activity => {
-
-                        const element =
-                            document.createElement("div");
-
-
-                        element.className =
-                            "activity-item";
-
-
-                        element.innerHTML = `
-
-                            <div class="activity-icon">
-                                ${activity.icon}
-                            </div>
-
-                            <div class="activity-text">
-
-                                <strong>
-                                    ${escapeHtml(activity.title)}
-                                </strong>
-
-                                <span>
-                                    ${escapeHtml(activity.detail)}
-                                </span>
-
-                            </div>
-
-                        `;
-
-
-                        activityList.appendChild(element);
-
-                    });
-
-            }
-
-
-
-            /* ===============================================
-               ORGANIZACIÓN
-            =============================================== */
-
-            let progress = 0;
-
-
-            if (events.length > 0) {
-
-                const eventsWithTasks =
-                    events.filter(event =>
-                        Array.isArray(event.tasks) &&
-                        event.tasks.length > 0
+                    upcomingContainer.appendChild(
+                        element
                     );
 
+                });
 
-                if (eventsWithTasks.length > 0) {
-
-                    let completed = 0;
-                    let total = 0;
-
-
-                    eventsWithTasks.forEach(event => {
-
-                        event.tasks.forEach(task => {
-
-                            total++;
-
-                            if (task.completed) {
-                                completed++;
-                            }
-
-                        });
-
-                    });
-
-
-                    progress =
-                        total > 0
-                            ? Math.round(
-                                (completed / total) * 100
-                            )
-                            : 0;
-
-                }
-
-                else {
-
-                    progress = 20;
-
-                }
-
-            }
-
-
-            document.getElementById("organizationProgress")
-                .style.width = `${progress}%`;
-
-
-            document.getElementById("organizationPercent")
-                .textContent = `${progress}%`;
-
-
-            const status =
-                document.getElementById("organizationStatus");
-
-
-            const description =
-                document.getElementById("organizationDescription");
-
-
-            if (progress >= 80) {
-
-                status.textContent =
-                    "🟢 Todo preparado";
-
-                description.textContent =
-                    "El clan tiene sus próximos planes bastante controlados.";
-
-            }
-
-            else if (progress >= 40) {
-
-                status.textContent =
-                    "🟠 En organización";
-
-                description.textContent =
-                    "Hay cosas en marcha. Todavía queda trabajo por hacer.";
-
-            }
-
-            else if (events.length > 0) {
-
-                status.textContent =
-                    "🟡 Hay cosas pendientes";
-
-                description.textContent =
-                    "Hay eventos creados, pero todavía queda organización por delante.";
-
-            }
-
-            else {
-
-                status.textContent =
-                    "⚪ Todo tranquilo";
-
-                description.textContent =
-                    "Cuando empecéis a organizar planes, aquí podréis ver vuestro progreso.";
-
-            }
+        }
 
 
 
-            /* ===============================================
-               FUNCIONES AUXILIARES
-            =============================================== */
+        /* ===============================================
+           ACTIVIDAD
+        =============================================== */
 
-            function formatDate(dateString) {
-
-                const date =
-                    new Date(dateString);
+        const activities = [];
 
 
-                if (isNaN(date.getTime())) {
-                    return "Fecha desconocida";
-                }
+        validEvents
+            .slice()
+            .sort((a, b) =>
+                new Date(
+                    b.created_at || b.date
+                ) -
+                new Date(
+                    a.created_at || a.date
+                )
+            )
+            .slice(0, 5)
+            .forEach(event => {
+
+                activities.push({
+
+                    icon: "📅",
+
+                    title:
+                        `Evento "${event.title || "Evento"}"`,
+
+                    detail:
+                        event.date
+                            ? formatDate(event.date)
+                            : "Evento reciente"
+
+                });
+
+            });
 
 
-                return date.toLocaleDateString(
-                    "es-ES",
-                    {
-                        day: "numeric",
-                        month: "long",
-                        year: "numeric"
+        if (memories.length > 0) {
+
+            activities.unshift({
+
+                icon: "📸",
+
+                title:
+                    `Hay ${memories.length} recuerdos guardados`,
+
+                detail:
+                    "El archivo del clan sigue creciendo"
+
+            });
+
+        }
+
+
+        if (activities.length > 0) {
+
+            activityList.innerHTML = "";
+
+
+            activities
+                .slice(0, 6)
+                .forEach(activity => {
+
+                    const element =
+                        document.createElement("div");
+
+
+                    element.className =
+                        "activity-item";
+
+
+                    element.innerHTML = `
+
+                        <div class="activity-icon">
+                            ${activity.icon}
+                        </div>
+
+                        <div class="activity-text">
+
+                            <strong>
+                                ${escapeHtml(
+                                    activity.title
+                                )}
+                            </strong>
+
+                            <span>
+                                ${escapeHtml(
+                                    activity.detail
+                                )}
+                            </span>
+
+                        </div>
+
+                    `;
+
+
+                    activityList.appendChild(
+                        element
+                    );
+
+                });
+
+        }
+
+        else {
+
+            activityList.innerHTML = `
+
+                <div class="empty-dashboard">
+                    Todavía no hay actividad reciente.
+                </div>
+
+            `;
+
+        }
+
+
+
+        /* ===============================================
+           ORGANIZACIÓN
+        =============================================== */
+
+        let progress = 0;
+
+        let completedTasks = 0;
+
+
+        for (const event of validEvents) {
+
+            const tasks =
+                await getEventTasks(event.id);
+
+
+            if (Array.isArray(tasks)) {
+
+                tasks.forEach(task => {
+
+                    if (task.completed) {
+                        completedTasks++;
                     }
+
+                });
+
+            }
+
+        }
+
+
+        if (totalTasks > 0) {
+
+            progress =
+                Math.round(
+                    (completedTasks / totalTasks) * 100
                 );
 
+        }
+
+        else if (validEvents.length > 0) {
+
+            progress = 20;
+
+        }
+
+
+        document.getElementById(
+            "organizationProgress"
+        ).style.width =
+            `${progress}%`;
+
+
+        document.getElementById(
+            "organizationPercent"
+        ).textContent =
+            `${progress}%`;
+
+
+        const status =
+            document.getElementById(
+                "organizationStatus"
+            );
+
+
+        const description =
+            document.getElementById(
+                "organizationDescription"
+            );
+
+
+        if (progress >= 80) {
+
+            status.textContent =
+                "🟢 Todo preparado";
+
+            description.textContent =
+                "El grupo tiene sus próximos planes bastante controlados.";
+
+        }
+
+        else if (progress >= 40) {
+
+            status.textContent =
+                "🟠 En organización";
+
+            description.textContent =
+                "Hay cosas en marcha. Todavía queda trabajo por hacer.";
+
+        }
+
+        else if (validEvents.length > 0) {
+
+            status.textContent =
+                "🟡 Hay cosas pendientes";
+
+            description.textContent =
+                "Hay eventos creados, pero todavía queda organización por delante.";
+
+        }
+
+        else {
+
+            status.textContent =
+                "⚪ Todo tranquilo";
+
+            description.textContent =
+                "Cuando empecéis a organizar planes, aquí podréis ver vuestro progreso.";
+
+        }
+
+
+
+        /* ===============================================
+           FUNCIONES AUXILIARES
+        =============================================== */
+
+        function formatDate(dateString) {
+
+            const date =
+                new Date(dateString);
+
+
+            if (isNaN(date.getTime())) {
+                return "Fecha desconocida";
             }
 
 
-            function escapeHtml(value) {
+            return date.toLocaleDateString(
+                "es-ES",
+                {
+                    day: "numeric",
+                    month: "long",
+                    year: "numeric"
+                }
+            );
 
-                return String(value ?? "")
-                    .replace(/&/g, "&amp;")
-                    .replace(/</g, "&lt;")
-                    .replace(/>/g, "&gt;")
-                    .replace(/"/g, "&quot;")
-                    .replace(/'/g, "&#039;");
+        }
 
-            }
 
-        });
+        function escapeHtml(value) {
 
-    </script>
+            return String(value ?? "")
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+
+        }
+
+    });
+
+</script>
 
 </body>
 
