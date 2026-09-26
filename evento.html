@@ -2123,14 +2123,12 @@ async function loadSupabaseExpenses() {
     }
 
 
-   function getAssigneeName(id) {
+  function getAssigneeName(id) {
 
-    const member =
-        getMembers().find(
-            member =>
-                String(member.user_id) ===
-                String(id)
-        );
+    const member = getMembers().find(
+        member =>
+            String(member.user_id) === String(id)
+    );
 
     if (!member) {
         return "Miembro";
