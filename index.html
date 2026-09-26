@@ -1205,6 +1205,168 @@
 
 </script>
 
+<script>
+
+    document.addEventListener("DOMContentLoaded", async () => {
+
+        const groupButton =
+            document.getElementById("currentGroupButton");
+
+        const groupName =
+            document.getElementById("currentGroupName");
+
+        const groupMenu =
+            document.getElementById("groupMenu");
+
+        const groupList =
+            document.getElementById("groupList");
+
+        const createGroupButton =
+            document.getElementById("createGroupButton");
+
+
+        /* ===============================================
+           CARGAR GRUPOS
+        =============================================== */
+
+        const groups = await getUserGroups();
+
+        if (!groups.length) {
+            groupName.textContent = "Sin grupo";
+            return;
+        }
+
+
+        const currentGroup =
+            await getCurrentGroup();
+
+        if (currentGroup) {
+            groupName.textContent = currentGroup.name;
+        }
+
+
+        /* ===============================================
+           ABRIR / CERRAR MENÚ
+        =============================================== */
+
+        groupButton.addEventListener("click", () => {
+
+            groupMenu.hidden =
+                !groupMenu.hidden;
+
+        });
+
+
+        /* ===============================================
+           MOSTRAR GRUPOS
+        =============================================== */
+
+        groupList.innerHTML = "";
+
+        groups.forEach(group => {
+
+            const button =
+                document.createElement("button");
+
+            button.type = "button";
+            button.className = "group-option";
+
+            if (
+                currentGroup &&
+                group.id === currentGroup.id
+            ) {
+                button.classList.add("active");
+            }
+
+
+            button.innerHTML = `
+                <strong>
+                    ${escapeHtml(group.name)}
+                </strong>
+
+                <span>
+                    ${escapeHtml(group.role)}
+                </span>
+            `;
+
+
+            button.addEventListener(
+                "click",
+                () => {
+
+                    setCurrentGroup(group.id);
+
+                    window.location.reload();
+
+                }
+            );
+
+
+            groupList.appendChild(button);
+
+        });
+
+
+        /* ===============================================
+           CREAR GRUPO
+        =============================================== */
+
+        createGroupButton.addEventListener(
+            "click",
+            async () => {
+
+                const name =
+                    prompt(
+                        "Nombre del nuevo grupo:"
+                    );
+
+                if (!name || !name.trim()) {
+                    return;
+                }
+
+
+                const description =
+                    prompt(
+                        "Descripción del grupo (opcional):"
+                    );
+
+
+                createGroupButton.disabled = true;
+
+                const newGroup =
+                    await createGroup(
+                        name.trim(),
+                        description
+                            ? description.trim()
+                            : null
+                    );
+
+
+                createGroupButton.disabled = false;
+
+
+                if (!newGroup) {
+
+                    alert(
+                        "No se ha podido crear el grupo."
+                    );
+
+                    return;
+
+                }
+
+
+                setCurrentGroup(newGroup.id);
+
+                window.location.reload();
+
+            }
+        );
+
+    });
+
+</script>
+    
     <!-- =====================================================
          DASHBOARD JAVASCRIPT
     ===================================================== -->
