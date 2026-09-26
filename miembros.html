@@ -512,11 +512,11 @@ if (
 
 }
 
-                /* ==========================================
-                   OBTENER MIEMBROS DEL GRUPO
-                ========================================== */
+/* ==========================================
+   OBTENER MIEMBROS DEL GRUPO
+========================================== */
 
-             const {
+const {
     data: members,
     error
 } = await supabaseClient.rpc(
@@ -527,10 +527,21 @@ if (
 );
 
 if (error) {
+
     console.error(
-        "Error cargando miembros:",
+        "Error obteniendo miembros:",
         error
     );
+
+    membersSubtitle.textContent =
+        "No se han podido cargar los miembros.";
+
+    membersGrid.innerHTML = `
+        <p>
+            Error cargando los miembros.
+        </p>
+    `;
+
     return;
 }
 
@@ -538,56 +549,12 @@ console.log(
     "MIEMBROS RECIBIDOS:",
     members
 );
-    .select(`
-        user_id,
-        role,
-        profiles (
-            id,
-            display_name,
-            username
-        )
-    `)
-    .eq("group_id", currentGroup.id);
-
-if (error) {
-    console.error("Error cargando miembros:", error);
-}
-
-console.log("MIEMBROS RECIBIDOS:", members);
-
-
-                if (error) {
-
-                    console.error(
-                        "Error obteniendo miembros:",
-                        error
-                    );
-
-                    membersSubtitle.textContent =
-                        "No se han podido cargar los miembros.";
-
-                    membersGrid.innerHTML = `
-                        <p>
-                            Error cargando los miembros.
-                        </p>
-                    `;
-
-                    return;
-
-                }
-
-
                 /* ==========================================
                    MOSTRAR MIEMBROS
                 ========================================== */
 
-                const validMembers =
-                    (members || [])
-                        .filter(
-                            member =>
-                                member.profiles
-                        );
-
+               const validMembers =
+    members || [];
 
                 membersSubtitle.textContent =
                     validMembers.length === 1
@@ -601,8 +568,6 @@ console.log("MIEMBROS RECIBIDOS:", members);
                 validMembers.forEach(
                     member => {
 
-                        const profile =
-                            member.profiles;
 
 
                         const card =
@@ -614,10 +579,10 @@ console.log("MIEMBROS RECIBIDOS:", members);
                             "member-card";
 
 
-                        const displayName =
-                            profile.display_name ||
-                            profile.username ||
-                            "Usuario";
+                   const displayName =
+    member.display_name ||
+    member.username ||
+    "Usuario";
 
 
                         const role =
