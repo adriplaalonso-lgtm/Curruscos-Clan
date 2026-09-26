@@ -1665,7 +1665,16 @@ async function loadCurrentGroupMembers() {
     document.getElementById("eventLocation").textContent =
         currentEvent.location || "Sin lugar";
 
-   renderParticipants();
+  const participants =
+    await getEventParticipants(currentEvent.id);
+
+currentEvent.participants =
+    (participants || []).map(participant => ({
+        id: participant.user_id,
+        status: participant.status
+    }));
+
+renderParticipants();
 
 renderTaskAssignees();
 
@@ -1902,31 +1911,39 @@ async function loadSupabaseExpenses() {
     }
 
 
-    function changeParticipant(memberId, status) {
+   async function changeParticipant(memberId, status) {
 
-        const existing =
-            currentEvent.participants.find(
-                person =>
-                    String(person.id) ===
-                    String(memberId)
-            );
+    const result = await setEventParticipant(
+        currentEvent.id,
+        memberId,
+        status
+    );
 
+    if (!result) {
+        alert("No se ha podido actualizar la participación.");
+        return;
+    }
 
-        if (existing) {
+    const existing =
+        currentEvent.participants.find(
+            person =>
+                String(person.id) === String(memberId)
+        );
 
-            existing.status = status;
+    if (existing) {
+        existing.status = status;
+    } else {
+        currentEvent.participants.push({
+            id: String(memberId),
+            status: status
+        });
+    }
 
-        } else {
-
-            currentEvent.participants.push({
-
-                id: String(memberId),
-
-                status: status
-
-            });
-
-        }
+    renderParticipants();
+    renderExpenseSplit();
+    updateProgress();
+    updateStatus();
+}
 
 
         saveEvent();
